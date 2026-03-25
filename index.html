@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRC131 - Comprehensive Exam</title>
+<style>
+  :root { --blue: #1e40af; --blue-light: #3b82f6; --green: #059669; --green-light: #10b981; --red: #ef4444; --orange: #f59e0b; --gray: #6b7280; --bg: #f1f5f9; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: #1f2937; line-height: 1.5; }
+  .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+
+  /* START PAGE */
+  .start-page { min-height: 100vh; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .start-card { background: #fff; border-radius: 20px; max-width: 620px; width: 100%; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
+  .start-header { background: linear-gradient(135deg, var(--blue), var(--blue-light)); padding: 36px 32px 28px; text-align: center; color: #fff; }
+  .start-header .college { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.75; margin-bottom: 6px; }
+  .start-header h1 { font-size: 24px; font-weight: 700; }
+  .start-header .sub { font-size: 14px; opacity: 0.9; margin-top: 6px; }
+  .start-header .sub2 { font-size: 12px; opacity: 0.65; margin-top: 4px; }
+  .start-body { padding: 24px 32px 32px; }
+  .instructions { background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 14px; margin-bottom: 24px; font-size: 13px; color: var(--blue); line-height: 1.8; }
+  .instructions strong { font-size: 14px; }
+  .label { display: block; font-size: 13px; font-weight: 700; color: var(--blue); margin-bottom: 8px; }
+  .program-btns { display: flex; gap: 10px; margin-bottom: 20px; }
+  .program-btn { flex: 1; padding: 14px 10px; border-radius: 12px; border: 2px solid #e5e7eb; background: #fff; cursor: pointer; text-align: center; transition: all 0.2s; }
+  .program-btn.active { border-color: var(--blue); background: linear-gradient(135deg, #eff6ff, #dbeafe); }
+  .program-btn .name { font-size: 18px; font-weight: 800; color: #9ca3af; }
+  .program-btn.active .name { color: var(--blue); }
+  .program-btn .desc { font-size: 11px; color: #b0b0b0; margin-top: 2px; }
+  .program-btn.active .desc { color: var(--blue-light); }
+  .search-box { position: relative; margin-bottom: 8px; }
+  .search-box input { width: 100%; padding: 10px 14px 10px 36px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 15px; outline: none; direction: rtl; font-family: inherit; }
+  .search-box input:focus { border-color: var(--blue-light); }
+  .search-box .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9ca3af; }
+  .name-list { max-height: 250px; overflow-y: auto; border: 2px solid #e5e7eb; border-radius: 12px; background: #fafbfc; }
+  .name-item { padding: 10px 14px; cursor: pointer; direction: rtl; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f0f0f0; font-size: 14px; transition: all 0.15s; }
+  .name-item:last-child { border-bottom: none; }
+  .name-item:nth-child(even) { background: #f8fafc; }
+  .name-item:hover { background: #eff6ff !important; }
+  .name-item.selected { background: var(--blue) !important; color: #fff; font-weight: 700; }
+  .name-num { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #d1d5db; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #9ca3af; font-weight: 700; flex-shrink: 0; }
+  .name-item.selected .name-num { border-color: #fff; background: var(--blue-light); color: #fff; }
+  .confirmed { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 12px 16px; margin: 16px 0; direction: rtl; display: flex; align-items: center; gap: 10px; animation: fadeIn 0.3s ease; }
+  .confirmed .check { width: 36px; height: 36px; border-radius: 50%; background: #22c55e; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; flex-shrink: 0; }
+  .start-btn { width: 100%; padding: 14px 0; border: none; border-radius: 12px; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; letter-spacing: 0.5px; }
+  .start-btn:enabled { background: linear-gradient(135deg, var(--blue), var(--blue-light)); box-shadow: 0 4px 14px rgba(30,64,175,0.4); }
+  .start-btn:disabled { background: #d1d5db; cursor: not-allowed; }
+  .count-info { font-size: 11px; color: #9ca3af; margin-top: 6px; text-align: right; direction: rtl; }
+
+  /* EXAM PAGE */
+  .topbar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 10px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .topbar-inner { max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .topbar-left { display: flex; align-items: center; gap: 8px; }
+  .topbar-left .code { font-size: 13px; font-weight: 700; color: var(--blue); }
+  .topbar-left .badge { font-size: 10px; color: #fff; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+  .topbar-left .badge.bom { background: var(--blue-light); }
+  .topbar-left .badge.en { background: var(--green-light); }
+  .topbar-left .sname { font-size: 12px; color: var(--gray); direction: rtl; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--gray); }
+  .progress-bar { width: 90px; height: 8px; background: #e5e7eb; border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue-light)); border-radius: 999px; transition: width 0.5s ease; }
+  .secnav { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 6px 20px; overflow-x: auto; white-space: nowrap; }
+  .secnav-inner { max-width: 800px; margin: 0 auto; display: flex; gap: 4px; }
+  .secnav-btn { padding: 7px 14px; border: none; border-radius: 8px; font-size: 11px; font-weight: 500; background: transparent; color: var(--gray); cursor: pointer; transition: all 0.2s; }
+  .secnav-btn.active { background: var(--blue); color: #fff; font-weight: 700; }
+  .sec-header { background: #fff; border-radius: 16px; padding: 22px 26px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .sec-header h2 { font-size: 18px; color: #111827; }
+  .sec-header .sub { font-size: 13px; color: var(--gray); margin-top: 5px; }
+  .sec-tags { display: flex; gap: 6px; }
+  .tag { padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+  .q-card { background: #fff; border-radius: 14px; padding: 18px 22px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-left: 4px solid #e5e7eb; transition: border-color 0.3s; }
+  .q-card.answered { border-left-color: #22c55e; }
+  .q-title { font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 12px; }
+  .q-title .num { color: var(--blue-light); margin-right: 6px; }
+  .option { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; border: 2px solid #f3f4f6; background: #fafafa; cursor: pointer; transition: all 0.15s; font-size: 13px; margin-bottom: 6px; }
+  .option:hover { background: #eff6ff; }
+  .option.selected { border-color: var(--blue-light); background: #eff6ff; color: var(--blue); }
+  .radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #d1d5db; flex-shrink: 0; transition: all 0.15s; }
+  .option.selected .radio { border: 5px solid var(--blue-light); }
+  .tf-btns { display: flex; gap: 8px; }
+  .tf-btn { flex: 1; padding: 9px 0; border-radius: 10px; border: 2px solid #e5e7eb; background: #fff; color: var(--gray); font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.15s; }
+  .tf-btn.selected { border-color: var(--blue-light); background: #eff6ff; color: var(--blue); }
+  .word-bank { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 12px; color: #92400e; }
+  .desc-bank { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 12px; color: #166534; }
+  .desc-bank div { margin-top: 3px; }
+  .match-row { background: #fff; border-radius: 14px; padding: 14px 22px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-left: 4px solid #e5e7eb; }
+  .match-row.answered { border-left-color: #22c55e; }
+  select { padding: 7px 14px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 13px; cursor: pointer; background: #fafafa; }
+  textarea { width: 100%; padding: 10px 12px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 13px; resize: vertical; font-family: inherit; line-height: 1.6; }
+  textarea:focus, select:focus { border-color: var(--blue-light); outline: none; }
+  .scenario-box { background: #fff; border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .scenario-box h3 { font-size: 15px; color: var(--blue); margin-bottom: 8px; }
+  .scenario-text { background: #f8fafc; border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; font-size: 13px; color: #374151; line-height: 1.7; border-left: 3px solid var(--blue-light); }
+  .nav-btns { display: flex; justify-content: space-between; margin-top: 20px; gap: 10px; }
+  .nav-btn { padding: 11px 24px; border-radius: 12px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+  .prev-btn { border: 2px solid #e5e7eb; background: #fff; color: #374151; }
+  .prev-btn:disabled { color: #d1d5db; cursor: not-allowed; }
+  .next-btn { border: none; background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: #fff; }
+  .submit-btn { border: none; background: linear-gradient(135deg, var(--green), var(--green-light)); color: #fff; font-weight: 700; font-size: 14px; box-shadow: 0 4px 14px rgba(5,150,105,0.4); }
+
+  /* RESULT PAGE */
+  .result-page { min-height: 100vh; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .result-card { background: #fff; border-radius: 20px; max-width: 600px; width: 100%; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
+  .result-header { background: linear-gradient(135deg, var(--green), var(--green-light)); padding: 36px 32px; text-align: center; color: #fff; }
+  .result-body { padding: 28px 32px; }
+  .big-score { font-size: 56px; font-weight: 800; color: var(--blue); text-align: center; }
+  .big-score span { font-size: 22px; color: #9ca3af; }
+  .grade-badge { display: inline-block; padding: 4px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+  .breakdown { background: #f8fafc; border-radius: 12px; padding: 16px; margin: 16px 0; }
+  .breakdown-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px solid #e5e7eb; }
+  .breakdown-row:last-child { border-bottom: none; }
+  .note-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 14px; font-size: 13px; color: #92400e; line-height: 1.6; direction: rtl; }
+
+  /* LOADING */
+  .loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+  .loading-box { background: #fff; border-radius: 16px; padding: 32px 40px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+  .spinner { width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeIn 0.3s ease; }
+  
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ★★★ IMPORTANT: Replace this URL with your Google Apps Script Web App URL ★★★ -->
+<script>
+// ============================================================
+// ★★★ ألصق رابط الـ Web App هنا ★★★
+// بعد ما تعمل Deploy في Google Apps Script، انسخ الرابط وضعه هنا
+// ============================================================
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw3ErU1tXyqJubki7Jd3X4_aQ2BoNgd5X7zw9ULA69_vzY7PazdXzdl1BHJsqK1kQMd/exec";
+// ============================================================
+</script>
+
+<div id="app"></div>
+
+<script>
+// ===== DATA =====
+const BOM_STUDENTS = [
+  "هديل فرج ابراهيم ابو شماله","نور فضل نافذ حمد","ندى علاء كمال ابو سويرح","حلا محسن أحمد الجمل",
+  "رغد رأفت يحيى القططي","داليا فتحي صبحي مكي","تالا محمد اسماعيل ابو عماره","اسماعيل محمد سليمان عويضه",
+  "رغد عيسى جمعه حمدان","حلا خالد عبد النجار","بتول ياسر خليل نصار","حسام عوني محمد ابوهربيد",
+  "هالة محمد خليل ابو حرب","اريج نشأت زهران الوحيدي","ميار أحمد سلامه ابو صوصين","تقوى وليد محمد بدران",
+  "ملك محمد عبد الرحمن ابو سخيله","بسنت أحمد محمد نصيف النجار","روند كرم جمعه ابوالحاج","لمى أحمد السيد عبد المحسن",
+  "الاء عمر منصور سليم","رهف سائد مصطفى المعلواني","روضة محمود عودة ابو طعيمه","روان حاتم عبد الله محسن",
+  "ايمان محمد سالم الرشايده","احمد محمد نعيم القدره","هبه عدنان شفيق الهمص","غرام شادي عبد الحكيم عيسى",
+  "رغد محسن احمد الجمل","رنين ايهاب نعيم عابد","رنين محمد عبد الرحمن الخطيب","سلمى منير صباح الشافعي",
+  "شهد صبحي عبد الله ابو حماد","عبد الكريم محمد اسماعيل صمد","ندى محمد عادل عوض","نور صبحي فاروق البوبلي","نور محمد مطر ابو سيف"
+];
+
+const EN_STUDENTS = [
+  "محمود عبدالله ممدوح ابو عبيد","معاذ خالد محمد اسماعيل","تالا خالد جادالله عثمان","سمر جهاد فتحي جمعه",
+  "شهد انيس احمد ابو صلاح","حنين علي نايف كلاب","ريماس ادهم حربي العتال","مصطفى محمد علي ابو الوفا",
+  "فرح محمد خليل صبح","انهار عبد العظيم سليمان وادي","منة الله فارس محمد السطري","ضحى محمد عطيه ابو حميده",
+  "سما نبيل صبحي العاجز","تالا فكري اسماعيل تمراز","تالا سامر أحمد البحة","معاذ أحمد عبد المجيد عيسى",
+  "سندس علاء محمود زعرب","ثريا وليد احمد ابو حور","ريما عمر محمد صيدم","ايمان ابراهيم أحمد ابو نجا",
+  "سندس خالد عبد الحميد ابو دقه","سلوى محي الدين محمد ابو سنيمه","باسل يوسف جمعه ابو صبيح","رهف عماد عبد الحميد النواجحه",
+  "سندس سعيد ابراهيم شبير","معاذ محمود حمدان ابو عبيد","محمود محمد حسن شلوله","هيام وسام صبحي شهاب",
+  "هاجر اشرف بشير كلوسه","جنان نزار عبد الكريم الجبري","ميرفت محمد سعيد ابو هداف","رنيم كمال شحادة السردي",
+  "امل محمود عودة ابو طعيمه","رؤى وائل خليل ابو مصطفى","احمد زكي حسن ابو موسى","اسراء حسن صلاح ماضي",
+  "ريتاج عاهد سعد المصري","خالد مصطفى ابراهيم الشريحي","هلا ايهاب نايف عثمان","مسك فواز أحمد الشنطي",
+  "وسام هاني نعيم الجليس","ياسمين عبد الحليم أبو محسن","احمد عبد السلام أحمد صالحة","ازهار عبد الرؤوف فهيد الدياري",
+  "شادية قاسم سلمان القاضي","ملك طارق زياد الداهودي"
+];
+
+const SECTIONS = [
+  { title:"Section 1: Multiple Choice Questions", subtitle:"Choose the correct answer. (2 marks each)", marks:20, level:"Basic", type:"mcq",
+    questions:[
+      {q:"What does IT stand for?",opts:["Internet Technology","Information Technology","Internal Transfer","Integrated Telephony"],c:1},
+      {q:"Which of the following is an example of hardware?",opts:["Microsoft Word","Windows Operating System","Keyboard","Google Chrome"],c:2},
+      {q:"What is the main function of the CPU?",opts:["Store data permanently","Display information on screen","Perform calculations and execute instructions","Connect to the internet"],c:2},
+      {q:"Which type of memory is volatile and loses data when the computer is turned off?",opts:["ROM","Hard Disk","RAM","USB Flash Drive"],c:2},
+      {q:"Which of the following is an output device?",opts:["Mouse","Scanner","Keyboard","Printer"],c:3},
+      {q:"A network that connects computers within the same building is called:",opts:["WAN","LAN","Internet","VoIP"],c:1},
+      {q:"Which storage unit is the largest?",opts:["Kilobyte","Megabyte","Gigabyte","Terabyte"],c:3},
+      {q:"What are the three Vs of Big Data?",opts:["Volume, Velocity, Variety","Virtual, Visual, Verified","Voice, Video, Value","Volume, Virus, Virtual"],c:0},
+      {q:"Which of the following best describes cloud computing?",opts:["Storing data only on local hard drives","Delivering computing services over the internet","Using only mainframe computers","A type of antivirus software"],c:1},
+      {q:"What does IoT stand for?",opts:["Integration of Technology","Internet of Things","Internal Operating Tool","Information on Transfer"],c:1}
+    ]},
+  { title:"Section 2: True or False", subtitle:"Select True or False. (1.5 marks each)", marks:15, level:"Basic", type:"tf",
+    questions:[
+      {q:"Software refers to the physical components of a computer.",c:false},
+      {q:"The CPU is considered the brain of the computer.",c:true},
+      {q:"ROM is volatile memory that loses data when the power is turned off.",c:false},
+      {q:"A scanner is an input device used to convert printed documents into digital files.",c:true},
+      {q:"A byte consists of 4 bits.",c:false},
+      {q:"The motherboard connects all internal components and allows them to communicate.",c:true},
+      {q:"E-Commerce refers to buying and selling goods and services over the internet.",c:true},
+      {q:"An Intranet is open to the public and anyone can access it.",c:false},
+      {q:"Repetitive Strain Injury (RSI) can be caused by prolonged keyboard use.",c:true},
+      {q:"A mainframe computer is small and portable like a laptop.",c:false}
+    ]},
+  { title:"Section 3: Fill in the Blanks", subtitle:"Select the correct word. (1.5 marks each)", marks:15, level:"Intermediate", type:"dropdown",
+    bank:["CPU","RAM","ROM","GUI","VoIP","LAN","WAN","Terabyte","Operating System","Ergonomics"],
+    questions:[
+      {q:"The ______ is the central processing unit that performs all calculations.",c:"CPU"},
+      {q:"______ is the temporary working memory erased when the computer is turned off.",c:"RAM"},
+      {q:"A ______ connects devices across large geographical distances.",c:"WAN"},
+      {q:"______ is the study of designing equipment to reduce physical strain.",c:"Ergonomics"},
+      {q:"The ______ manages hardware and provides a platform for applications.",c:"Operating System"},
+      {q:"A ______ allows users to interact using icons and menus.",c:"GUI"},
+      {q:"______ contains permanent start-up instructions (BIOS).",c:"ROM"},
+      {q:"A ______ connects computers within the same building.",c:"LAN"},
+      {q:"One ______ equals approximately 1,000 Gigabytes.",c:"Terabyte"},
+      {q:"______ allows people to make voice calls over the internet.",c:"VoIP"}
+    ]},
+  { title:"Section 4: Matching", subtitle:"Match term with description. (1.5 marks each)", marks:15, level:"Intermediate", type:"matching",
+    terms:["Hard Disk Drive (HDD)","Artificial Intelligence (AI)","Scanner","Intranet","Monitor (VDU)","IoT","Firewall","Computer Virus","SSD","B2C"],
+    descs:[
+      {l:"A",t:"Translates physical documents into digital files"},{l:"B",t:"The primary permanent storage inside a computer"},
+      {l:"C",t:"A closed private network for organization members"},{l:"D",t:"Simulation of human intelligence in computers"},
+      {l:"E",t:"Physical objects connected via sensors and internet"},{l:"F",t:"Visual display unit showing information on screen"},
+      {l:"G",t:"Small harmful programs that can destroy data"},{l:"H",t:"Protects a network from unauthorized access"},
+      {l:"I",t:"E-commerce between businesses and consumers"},{l:"J",t:"Storage device with no moving parts, faster than HDD"}
+    ],
+    map:{0:"B",1:"D",2:"A",3:"C",4:"F",5:"E",6:"H",7:"G",8:"J",9:"I"}
+  },
+  { title:"Section 5: Short Answer Questions", subtitle:"Answer in 2-4 sentences each.", marks:20, level:"Advanced", type:"essay",
+    questions:[
+      {q:"Explain the difference between hardware and software. Give one example of each.",m:4},
+      {q:"What is the difference between RAM and ROM? Mention two differences.",m:4},
+      {q:"Describe the IPOS cycle with a real-world example from a hospital or business office.",m:4},
+      {q:"List three health and safety precautions when using a computer for long periods.",m:4},
+      {q:"Define Artificial Intelligence (AI) and give two real-world application examples.",m:4}
+    ]},
+  { title:"Section 6: Practical Scenarios", subtitle:"Read each scenario and answer.", marks:15, level:"Advanced", type:"scenario",
+    scenarios:[
+      { title:"Hospital Reception", text:"A hospital reception uses desktop computers for check-in, barcode scanners for wristband ID, and printers for appointment slips. Connected through an internal network.",
+        questions:[{q:"Identify TWO input devices and ONE output device from the scenario.",m:3},{q:"What type of network (LAN or WAN) connects these devices? Justify.",m:2}]},
+      { title:"Business Office Security", text:"An accounting office found computers infected with a virus after an employee opened an unknown email attachment. No updated antivirus software.",
+        questions:[{q:"Explain how the virus likely infected the computers.",m:2},{q:"List THREE steps to prevent future virus attacks.",m:3}]},
+      { title:"Data vs Information", text:"A manager collects raw numbers: 120, 95, 200, 150, 88. After processing, the system shows total revenue increased by 15%.",
+        questions:[{q:"What represents DATA and what represents INFORMATION? Explain.",m:3},{q:"Name ONE software and ONE output device to present the report.",m:2}]}
+    ]}
+];
+
+// ===== APP STATE =====
+let state = { page:"start", section:0, answers:{}, name:"", program:"", search:"", loading:false, score:null, sectionScores:null };
+
+function getA(si, qi) { return state.answers[si+"-"+qi] ?? null; }
+function setA(si, qi, v) { state.answers[si+"-"+qi] = v; render(); }
+
+function calcScores() {
+  let s1=0,s2=0,s3=0,s4=0;
+  SECTIONS[0].questions.forEach((q,i) => { if(getA(0,i)===q.c) s1+=2; });
+  SECTIONS[1].questions.forEach((q,i) => { let a=getA(1,i); if(a!==null && (a==="true")===q.c) s2+=1.5; });
+  SECTIONS[2].questions.forEach((q,i) => { if(getA(2,i)===q.c) s3+=1.5; });
+  SECTIONS[3].terms.forEach((_,i) => { if(getA(3,i)===SECTIONS[3].map[i]) s4+=1.5; });
+  return {s1,s2,s3,s4,total:s1+s2+s3+s4};
+}
+
+function countAnswered() {
+  let c=0,t=0;
+  SECTIONS.forEach((s,si) => {
+    if(s.type==="mcq"||s.type==="tf"||s.type==="dropdown") s.questions.forEach((_,qi)=>{t++;if(getA(si,qi)!==null)c++;});
+    else if(s.type==="matching") s.terms.forEach((_,qi)=>{t++;if(getA(si,qi)!==null)c++;});
+    else if(s.type==="essay") s.questions.forEach((_,qi)=>{t++;if(getA(si,qi)&&getA(si,qi).trim())c++;});
+    else if(s.type==="scenario") s.scenarios.forEach((sc,sci)=>sc.questions.forEach((_,qi)=>{t++;if(getA(si,sci+"-"+qi)&&getA(si,sci+"-"+qi).trim())c++;}));
+  });
+  return {c,t};
+}
+
+async function submitExam() {
+  let scores = calcScores();
+  state.sectionScores = scores;
+  state.score = scores.total;
+  
+  // Collect essay answers
+  let essayAnswers = SECTIONS[4].questions.map((_,qi) => getA(4,qi) || "");
+  let scenarioAnswers = [];
+  SECTIONS[5].scenarios.forEach((sc,sci) => sc.questions.forEach((_,qi) => scenarioAnswers.push(getA(5,sci+"-"+qi) || "")));
+  
+  // Try to send to Google Sheets
+  if (WEBAPP_URL && WEBAPP_URL !== "PASTE_YOUR_WEBAPP_URL_HERE") {
+    state.loading = true;
+    render();
+    try {
+      await fetch(WEBAPP_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          studentName: state.name,
+          program: state.program,
+          sectionScores: scores,
+          essayAnswers: essayAnswers,
+          scenarioAnswers: scenarioAnswers,
+          allAnswers: state.answers
+        })
+      });
+    } catch(e) { console.log("Could not send to sheets:", e); }
+    state.loading = false;
+  }
+  
+  state.page = "result";
+  render();
+  window.scrollTo(0,0);
+}
+
+// ===== RENDER =====
+function render() {
+  const app = document.getElementById("app");
+  
+  if (state.loading) {
+    app.innerHTML = `<div class="loading-overlay"><div class="loading-box"><div class="spinner"></div><div style="font-size:15px;font-weight:600;color:#1f2937">Submitting exam...</div><div style="font-size:13px;color:#6b7280;margin-top:4px;direction:rtl">جاري تسليم الامتحان...</div></div></div>` + app.innerHTML;
+    return;
+  }
+  
+  if (state.page === "start") return renderStart(app);
+  if (state.page === "result") return renderResult(app);
+  renderExam(app);
+}
+
+function renderStart(app) {
+  let students = state.program==="BOM" ? BOM_STUDENTS : state.program==="EN" ? EN_STUDENTS : [];
+  let filtered = students.filter(s => s.includes(state.search));
+  
+  let nameListHTML = "";
+  if (state.program) {
+    let namesHTML = filtered.length === 0 
+      ? '<div style="padding:20px;text-align:center;color:#9ca3af;font-size:14px;direction:rtl">لا توجد نتائج مطابقة</div>'
+      : filtered.map((n,i) => {
+          let sel = state.name === n;
+          let idx = students.indexOf(n)+1;
+          return `<div class="name-item ${sel?'selected':''}" onclick="selectName('${n.replace(/'/g,"\\'")}')"><div class="name-num">${sel?'✓':idx}</div><span>${n}</span></div>`;
+        }).join("");
+    
+    nameListHTML = `
+      <div class="fade-in" style="margin-bottom:20px">
+        <div class="label">Step 2: Select your name / اختر اسمك</div>
+        <div class="search-box"><input value="${state.search}" oninput="updateSearch(this.value)" placeholder="ابحث عن اسمك هنا..."><span class="icon">🔍</span></div>
+        <div class="name-list">${namesHTML}</div>
+        <div class="count-info">إجمالي الطلاب: ${students.length} | نتائج البحث: ${filtered.length}</div>
+      </div>`;
+  }
+  
+  let confirmHTML = state.name ? `
+    <div class="confirmed">
+      <div class="check">✓</div>
+      <div><div style="font-size:15px;font-weight:700;color:#166534">${state.name}</div>
+      <div style="font-size:12px;color:#4ade80">${state.program==="BOM"?"Business Office Management":"Emergency Nursing"}</div></div>
+    </div>` : "";
+  
+  app.innerHTML = `
+    <div class="start-page">
+      <div class="start-card">
+        <div class="start-header">
+          <div class="college">UNRWA — Khan Younis Training College</div>
+          <h1>Introduction to Computer Skills</h1>
+          <div class="sub">GRC131 — Comprehensive Exam</div>
+          <div class="sub2">Unit 1: Basic Concepts of Information Technology</div>
+          <div class="sub2">Instructor: Khalil El Halabi</div>
+        </div>
+        <div class="start-body">
+          <div class="instructions">
+            <strong>Exam Instructions / تعليمات الامتحان:</strong><br>
+            • Total: 100 marks — 6 sections — 90 minutes<br>
+            • Sections 1–4: Auto-graded | Sections 5–6: Manual grading
+          </div>
+          <div class="label">Step 1: Select your program / اختر تخصصك</div>
+          <div class="program-btns">
+            <div class="program-btn ${state.program==='BOM'?'active':''}" onclick="selectProgram('BOM')">
+              <div class="name">BOM</div><div class="desc">Business Office Management</div>
+              <div style="font-size:10px;color:#aaa;margin-top:2px">${BOM_STUDENTS.length} students</div>
+            </div>
+            <div class="program-btn ${state.program==='EN'?'active':''}" onclick="selectProgram('EN')">
+              <div class="name">EN</div><div class="desc">Emergency Nursing</div>
+              <div style="font-size:10px;color:#aaa;margin-top:2px">${EN_STUDENTS.length} students</div>
+            </div>
+          </div>
+          ${nameListHTML}
+          ${confirmHTML}
+          <button class="start-btn" ${state.name&&state.program?'onclick="startExam()"':'disabled'}>Start Exam — ابدأ الامتحان →</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderExam(app) {
+  let sec = SECTIONS[state.section];
+  let {c,t} = countAnswered();
+  let pct = Math.round((c/t)*100);
+  let levelColors = {Basic:"#22c55e",Intermediate:"#f59e0b",Advanced:"#ef4444"};
+  let lc = levelColors[sec.level];
+  
+  let secNavHTML = SECTIONS.map((s,i) => `<button class="secnav-btn ${state.section===i?'active':''}" onclick="goSection(${i})">${i+1}</button>`).join("");
+  
+  let contentHTML = "";
+  
+  if (sec.type === "mcq") {
+    contentHTML = sec.questions.map((q,qi) => {
+      let ans = getA(state.section,qi);
+      let optsHTML = q.opts.map((o,oi) => `<div class="option ${ans===oi?'selected':''}" onclick="setA(${state.section},${qi},${oi})"><div class="radio"></div><span>${String.fromCharCode(97+oi)}) ${o}</span></div>`).join("");
+      return `<div class="q-card ${ans!==null?'answered':''}"><div class="q-title"><span class="num">Q${qi+1}.</span>${q.q}</div>${optsHTML}</div>`;
+    }).join("");
+  }
+  
+  else if (sec.type === "tf") {
+    contentHTML = sec.questions.map((q,qi) => {
+      let ans = getA(state.section,qi);
+      return `<div class="q-card ${ans!==null?'answered':''}"><div class="q-title"><span class="num">Q${qi+1}.</span>${q.q}</div>
+        <div class="tf-btns"><button class="tf-btn ${ans==='true'?'selected':''}" onclick="setA(${state.section},${qi},'true')">✓ True</button>
+        <button class="tf-btn ${ans==='false'?'selected':''}" onclick="setA(${state.section},${qi},'false')">✗ False</button></div></div>`;
+    }).join("");
+  }
+  
+  else if (sec.type === "dropdown") {
+    let bankHTML = `<div class="word-bank"><strong>Word Bank:</strong> ${sec.bank.join("  •  ")}</div>`;
+    contentHTML = bankHTML + sec.questions.map((q,qi) => {
+      let ans = getA(state.section,qi) || "";
+      let opts = sec.bank.map(w => `<option value="${w}" ${ans===w?'selected':''}>${w}</option>`).join("");
+      return `<div class="q-card ${ans?'answered':''}"><div class="q-title"><span class="num">Q${qi+1}.</span>${q.q}</div>
+        <select onchange="setA(${state.section},${qi},this.value||null)"><option value="">-- Select Answer --</option>${opts}</select></div>`;
+    }).join("");
+  }
+  
+  else if (sec.type === "matching") {
+    let descHTML = `<div class="desc-bank"><strong>Descriptions:</strong>${sec.descs.map(d=>`<div><strong>${d.l}.</strong> ${d.t}</div>`).join("")}</div>`;
+    let opts = sec.descs.map(d => `<option value="${d.l}">${d.l}</option>`).join("");
+    contentHTML = descHTML + sec.terms.map((term,qi) => {
+      let ans = getA(state.section,qi) || "";
+      let selOpts = sec.descs.map(d => `<option value="${d.l}" ${ans===d.l?'selected':''}>${d.l}</option>`).join("");
+      return `<div class="match-row ${ans?'answered':''}"><span style="font-size:13px;font-weight:600">${qi+1}. ${term}</span>
+        <select onchange="setA(${state.section},${qi},this.value||null)"><option value="">--</option>${selOpts}</select></div>`;
+    }).join("");
+  }
+  
+  else if (sec.type === "essay") {
+    contentHTML = sec.questions.map((q,qi) => {
+      let ans = getA(state.section,qi) || "";
+      return `<div class="q-card ${ans.trim()?'answered':''}">
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px">
+          <div class="q-title" style="margin:0;flex:1"><span class="num">Q${qi+1}.</span>${q.q}</div>
+          <span style="font-size:11px;color:#9ca3af">${q.m} marks</span></div>
+        <textarea rows="4" placeholder="Type your answer here..." oninput="setA(${state.section},${qi},this.value)">${ans}</textarea></div>`;
+    }).join("");
+  }
+  
+  else if (sec.type === "scenario") {
+    contentHTML = sec.scenarios.map((sc,sci) => {
+      let qsHTML = sc.questions.map((q,qi) => {
+        let ans = getA(state.section, sci+"-"+qi) || "";
+        return `<div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:6px">
+            <p style="font-size:13px;font-weight:600">${String.fromCharCode(97+qi)}) ${q.q}</p>
+            <span style="font-size:11px;color:#9ca3af">${q.m} marks</span></div>
+          <textarea rows="3" placeholder="Type your answer here..." oninput="setA(${state.section},'${sci}-${qi}',this.value)">${ans}</textarea></div>`;
+      }).join("");
+      return `<div class="scenario-box"><h3>Scenario ${sci+1}: ${sc.title}</h3><div class="scenario-text">${sc.text}</div>${qsHTML}</div>`;
+    }).join("");
+  }
+  
+  let navHTML = `<div class="nav-btns">
+    <button class="nav-btn prev-btn" ${state.section===0?'disabled':''} onclick="goSection(${state.section-1})">← Previous</button>
+    ${state.section < SECTIONS.length-1 
+      ? `<button class="nav-btn next-btn" onclick="goSection(${state.section+1})">Next →</button>`
+      : `<button class="nav-btn submit-btn" onclick="confirmSubmit()">✓ Submit — تسليم</button>`}
+  </div>`;
+  
+  app.innerHTML = `
+    <div class="topbar"><div class="topbar-inner">
+      <div class="topbar-left"><span class="code">GRC131</span><span class="badge ${state.program.toLowerCase()}">${state.program}</span><span class="sname">${state.name}</span></div>
+      <div class="topbar-right"><span>${c}/${t}</span><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div></div>
+    </div></div>
+    <div class="secnav"><div class="secnav-inner">${secNavHTML}</div></div>
+    <div class="container">
+      <div class="sec-header" style="border-top:4px solid ${lc}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+          <div><h2>${sec.title}</h2><p class="sub">${sec.subtitle}</p></div>
+          <div class="sec-tags"><span class="tag" style="background:${lc}20;color:${lc}">${sec.level}</span><span class="tag" style="background:#f0f0f0;color:#555">${sec.marks} marks</span></div>
+        </div>
+      </div>
+      ${contentHTML}
+      ${navHTML}
+    </div>`;
+}
+
+function renderResult(app) {
+  let s = state.sectionScores;
+  let autoMax = 65;
+  let pct = Math.round((state.score/autoMax)*100);
+  let grade = pct>=80?"Excellent":pct>=60?"Good":pct>=40?"Needs Improvement":"Below Expectations";
+  let gradeBg = pct>=80?"#dcfce7":pct>=60?"#fef9c3":"#fee2e2";
+  let gradeColor = pct>=80?"#166534":pct>=60?"#854d0e":"#991b1b";
+  
+  app.innerHTML = `
+    <div class="result-page"><div class="result-card">
+      <div class="result-header">
+        <div style="font-size:48px;margin-bottom:8px">✓</div>
+        <h2 style="font-size:22px">Exam Submitted Successfully!</h2>
+        <h3 style="margin:8px 0 0;font-size:17px;direction:rtl">${state.name}</h3>
+        <p style="opacity:0.7;margin:4px 0 0;font-size:13px">${state.program==="BOM"?"Business Office Management":"Emergency Nursing"}</p>
+      </div>
+      <div class="result-body">
+        <div style="text-align:center;margin-bottom:24px">
+          <div class="big-score">${state.score}<span>/${autoMax}</span></div>
+          <div style="font-size:14px;color:#6b7280">Auto-Graded Score (Sections 1–4)</div>
+          <div style="margin-top:12px"><span class="grade-badge" style="background:${gradeBg};color:${gradeColor}">${grade} — ${pct}%</span></div>
+        </div>
+        <div class="breakdown">
+          <div style="font-size:13px;font-weight:600;color:#374151;margin-bottom:10px">Score Breakdown:</div>
+          <div class="breakdown-row"><span>Multiple Choice</span><span style="font-weight:700;color:var(--blue)">${s.s1}/20</span></div>
+          <div class="breakdown-row"><span>True or False</span><span style="font-weight:700;color:var(--blue)">${s.s2}/15</span></div>
+          <div class="breakdown-row"><span>Fill in the Blanks</span><span style="font-weight:700;color:var(--blue)">${s.s3}/15</span></div>
+          <div class="breakdown-row" style="border:none"><span>Matching</span><span style="font-weight:700;color:var(--blue)">${s.s4}/15</span></div>
+        </div>
+        <div class="note-box"><strong>ملاحظة:</strong> القسم 5 و 6 (35 درجة) تحتاج تصحيح يدوي من المدرّس. الدرجة النهائية ستُحدّث بعد المراجعة.</div>
+      </div>
+    </div></div>`;
+}
+
+// ===== EVENT HANDLERS =====
+function selectProgram(p) { state.program = p; state.name = ""; state.search = ""; render(); }
+function selectName(n) { state.name = n; render(); }
+function updateSearch(v) { state.search = v; state.name = ""; render(); }
+function startExam() { state.page = "exam"; render(); window.scrollTo(0,0); }
+function goSection(i) { if(i>=0 && i<SECTIONS.length) { state.section = i; render(); window.scrollTo(0,0); } }
+function confirmSubmit() { if(confirm("Are you sure you want to submit?\nهل أنت متأكد من تسليم الامتحان؟")) submitExam(); }
+
+// Make setA global
+window.setA = setA;
+
+// Initial render
+render();
+</script>
+</body>
+</html>
