@@ -138,7 +138,7 @@ textarea:focus,select:focus{border-color:var(--bl);outline:none}
 <script>
 // ★★★ CONFIG — غيّر هذه القيم لكل امتحان جديد ★★★
 var CFG={
-  url:"https://script.google.com/macros/s/AKfycbyEsUuzSw4vm-c_3gIksDSrVfIi6oGc0GHJeWCmEA8Riss-UYQ6oVqL-LJOmrvxAib7iw/exec",
+  url:"https://script.google.com/macros/s/AKfycbz4kloPJy_1Fxv29A4HoV52PWwQbj1eNvhU011xtGGUMQ73QwAMWQ13OrfTmTP1EO-JAA/exec",
   examId:"GRC131_U1_2026",
   title:"Introduction to Computer Skills",
   code:"GRC131",
@@ -252,6 +252,9 @@ var BHV={
   focusLost:0,             // focus lost events
   totalClicks:0,           // total interaction clicks
   questionsSkipped:[],     // questions left blank at submit
+  driveUrl:null,           // رابط Drive بعد الـ submit
+  driveFileName:null,      // اسم الملف في Drive
+  drivePending:false,      // true = لسه بتشتغل في السيرفر
   lastActivity:null,       // last interaction timestamp
   idlePeriods:[],          // [{start, end, duration}] idle > 30s
   idleStart:null,
@@ -495,8 +498,10 @@ function submit(){
   var pen=S.att>1;
   // Build comprehensive JSON
   var studentJSON=buildStudentJSON();
-  // Store JSON for download
+  // Store JSON for local download
   S.jsonData=studentJSON;
+  // Reset Drive URL state
+  S.driveUrl=null;S.driveFileName=null;S.drivePending=true;
   var ea=SEC[4].qs.map(function(_,i){return gA(4,i)||""});
   var sa=[];SEC[5].scs.forEach(function(c,ci){c.qs.forEach(function(_,qi){sa.push(gA(5,ci+"-"+qi)||"")})});
   if(CFG.url){
@@ -506,9 +511,40 @@ function submit(){
     var flds={studentName:S.nm,program:S.pr,examId:CFG.examId,s1:sc.s1,s2:sc.s2,s3:sc.s3,s4:sc.s4,duration:S.el,attemptNumber:S.att,penaltyApplied:pen?"true":"false",essayAnswers:ea.join("|||"),scenarioAnswers:sa.join("|||"),studentJSON:JSON.stringify(studentJSON)};
     for(var k in flds){var inp=document.createElement("input");inp.type="hidden";inp.name=k;inp.value=flds[k];fm.appendChild(inp)}
     document.body.appendChild(fm);fm.submit();
-    setTimeout(function(){try{document.body.removeChild(fm);document.body.removeChild(ifr)}catch(e){}S.ld=false;S.pg="result";R();window.scrollTo(0,0)},3500)
+    // بعد 3.5 ثانية: انتقل لصفحة النتيجة
+    setTimeout(function(){
+      try{document.body.removeChild(fm);document.body.removeChild(ifr)}catch(e){}
+      S.ld=false;S.pg="result";R();window.scrollTo(0,0);
+      // polling: نجيب رابط Drive بعد ما تنتهي العملية في السيرفر
+      pollDriveUrl(0);
+    },3500)
   }else{S.pg="result";R();window.scrollTo(0,0)}
 }
+
+// ============================================================
+// Polling — نطلب رابط Drive من Apps Script عبر GET
+// Apps Script يحفظ الرابط في ScriptProperties وهنا نجيبه
+// ============================================================
+function pollDriveUrl(attempt){
+  if(!CFG.url||attempt>8)return;
+  var getUrl=CFG.url+"?action=getdriveurl&studentName="+encodeURIComponent(S.nm)+"&program="+encodeURIComponent(S.pr)+"&examId="+encodeURIComponent(CFG.examId);
+  fetch(getUrl)
+    .then(function(r){return r.json()})
+    .then(function(d){
+      if(d.downloadUrl){
+        S.driveUrl=d.downloadUrl;
+        S.driveFileName=d.fileName||S.nm.replace(/\s/g,"_")+"_"+CFG.examId+".json";
+        S.drivePending=false;
+        R();
+      } else {
+        setTimeout(function(){pollDriveUrl(attempt+1)},5000);
+      }
+    })
+    .catch(function(){
+      setTimeout(function(){pollDriveUrl(attempt+1)},5000);
+    });
+}
+
 function downloadJSON(){
   if(!S.jsonData)return;
   var str=JSON.stringify(S.jsonData,null,2);
@@ -573,7 +609,41 @@ var gc=pc>=80?"#166534":pc>=60?"#854d0e":"#991b1b";
 var pen=S.att>1?'<div style="background:#fef2f2;border:2px solid #dc2626;border-radius:12px;padding:14px;margin:12px 0;text-align:center;direction:rtl"><div style="font-size:16px;font-weight:800;color:#991b1b">⚠️ محاولة #'+S.att+' — Penalty Applied</div><div style="font-size:13px;color:#7f1d1d;margin-top:6px">سيُعتمد العلامة الأقل تلقائياً</div></div>':"";
 var cr=S.jsonData?S.jsonData.behavior.completionRate:0;
 var bhv='<div style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:12px;padding:14px;margin:12px 0"><div style="font-size:13px;font-weight:700;color:#5b21b6;margin-bottom:8px">📊 Exam Analytics / تحليلات الامتحان</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;color:#6d28d9"><div>⏱ Duration: <b>'+S.el+'</b></div><div>📋 Completion: <b>'+cr+'%</b></div><div>🔄 Tab switches: <b>'+BHV.tabSwitches+'</b></div><div>🖱️ Clicks: <b>'+BHV.totalClicks+'</b></div><div>⏸️ Idle periods: <b>'+BHV.idlePeriods.length+'</b></div><div>📝 Answer edits: <b>'+Object.keys(BHV.answerChanges).length+'</b></div></div></div>';
-app.innerHTML='<div class="rp"><div class="rc"><div class="rh"><div style="font-size:48px;margin-bottom:8px">✓</div><h2 style="font-size:22px">Exam Submitted!</h2><h3 style="margin:8px 0 0;font-size:17px;direction:rtl">'+S.nm+'</h3><p style="opacity:.7;font-size:13px">'+(S.pr==="BOM"?"Business Office Management":"Emergency Nursing")+'</p></div><div class="rby"><div class="tr"><div style="font-size:12px;color:var(--gray);margin-bottom:4px">⏱ الوقت المستغرق</div><div class="tv">'+S.el+'</div></div>'+pen+'<div style="text-align:center;margin-bottom:24px"><div class="bs">'+S.sc+'<span>/'+am+'</span></div><div style="font-size:14px;color:#6b7280">Auto-Graded (1–4)</div><div style="margin-top:12px"><span class="gb" style="background:'+gb+';color:'+gc+'">'+g+' — '+pc+'%</span></div></div><div class="bkd"><div style="font-size:13px;font-weight:600;margin-bottom:10px">Breakdown:</div><div class="bkr"><span>MCQ</span><span style="font-weight:700;color:var(--blue)">'+s.s1+'/20</span></div><div class="bkr"><span>T/F</span><span style="font-weight:700;color:var(--blue)">'+s.s2+'/15</span></div><div class="bkr"><span>Fill</span><span style="font-weight:700;color:var(--blue)">'+s.s3+'/15</span></div><div class="bkr" style="border:none"><span>Match</span><span style="font-weight:700;color:var(--blue)">'+s.s4+'/15</span></div></div>'+bhv+'<div class="ntb"><strong>ملاحظة:</strong> القسم 5 و 6 (35 درجة) تحتاج تصحيح يدوي.</div><button onclick="downloadJSON()" style="width:100%;margin-top:16px;padding:12px;border:none;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(124,58,237,.4)">📥 Download Full Report (JSON)</button></div></div></div>'}
+
+// ============================================================
+// زر Drive: 3 حالات — pending / ready / local-only
+// ============================================================
+var driveBtn="";
+if(S.drivePending){
+  // لسه بتشتغل في السيرفر
+  driveBtn='<div style="width:100%;margin-top:12px;padding:12px;border-radius:12px;background:#f1f5f9;border:2px dashed #cbd5e1;text-align:center;font-size:13px;color:#64748b;direction:rtl">'
+    +'<span style="animation:spin 1s linear infinite;display:inline-block;margin-left:6px">⏳</span>'
+    +'جاري حفظ ملفك في Google Drive...'
+    +'</div>';
+}else if(S.driveUrl){
+  // الرابط جاهز — زر تحميل مباشر من Drive
+  driveBtn='<div style="margin-top:12px;border-radius:14px;overflow:hidden;box-shadow:0 4px 18px rgba(15,157,88,.25)">'
+    +'<div style="background:linear-gradient(135deg,#0f9d58,#34a853);padding:10px 16px;display:flex;align-items:center;gap:8px">'
+    +'<span style="font-size:20px">☁️</span>'
+    +'<div style="flex:1;text-align:right">'
+    +'<div style="font-size:12px;color:rgba(255,255,255,.8)">تم الحفظ في Google Drive</div>'
+    +'<div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:2px;word-break:break-all">'+S.driveFileName+'</div>'
+    +'</div>'
+    +'</div>'
+    +'<a href="'+S.driveUrl+'" target="_blank" '
+    +'style="display:block;background:#fff;padding:12px;text-align:center;font-size:14px;font-weight:700;color:#0f9d58;text-decoration:none;border-top:1px solid #e2f0e8">'
+    +'⬇️ تحميل ملف التقرير من Drive'
+    +'</a>'
+    +'</div>';
+}
+// زر التحميل المحلي (دائماً موجود)
+var localBtn='<button onclick="downloadJSON()" '
+  +'style="width:100%;margin-top:10px;padding:12px;border:none;border-radius:12px;'
+  +'background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;font-size:14px;'
+  +'font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(124,58,237,.4)">'
+  +'📥 Download Full Report (JSON)</button>';
+
+app.innerHTML='<div class="rp"><div class="rc"><div class="rh"><div style="font-size:48px;margin-bottom:8px">✓</div><h2 style="font-size:22px">Exam Submitted!</h2><h3 style="margin:8px 0 0;font-size:17px;direction:rtl">'+S.nm+'</h3><p style="opacity:.7;font-size:13px">'+(S.pr==="BOM"?"Business Office Management":"Emergency Nursing")+'</p></div><div class="rby"><div class="tr"><div style="font-size:12px;color:var(--gray);margin-bottom:4px">⏱ الوقت المستغرق</div><div class="tv">'+S.el+'</div></div>'+pen+'<div style="text-align:center;margin-bottom:24px"><div class="bs">'+S.sc+'<span>/'+am+'</span></div><div style="font-size:14px;color:#6b7280">Auto-Graded (1–4)</div><div style="margin-top:12px"><span class="gb" style="background:'+gb+';color:'+gc+'">'+g+' — '+pc+'%</span></div></div><div class="bkd"><div style="font-size:13px;font-weight:600;margin-bottom:10px">Breakdown:</div><div class="bkr"><span>MCQ</span><span style="font-weight:700;color:var(--blue)">'+s.s1+'/20</span></div><div class="bkr"><span>T/F</span><span style="font-weight:700;color:var(--blue)">'+s.s2+'/15</span></div><div class="bkr"><span>Fill</span><span style="font-weight:700;color:var(--blue)">'+s.s3+'/15</span></div><div class="bkr" style="border:none"><span>Match</span><span style="font-weight:700;color:var(--blue)">'+s.s4+'/15</span></div></div>'+bhv+'<div class="ntb"><strong>ملاحظة:</strong> القسم 5 و 6 (35 درجة) تحتاج تصحيح يدوي.</div>'+driveBtn+localBtn+'</div></div></div>'}
 </script>
 <div id="app"></div>
 <div id="ll" class="lo hid"><div class="lob"><div class="spn"></div><div style="font-size:15px;font-weight:600">Submitting...</div><div style="font-size:13px;color:#6b7280;direction:rtl">جاري التسليم...</div></div></div>
