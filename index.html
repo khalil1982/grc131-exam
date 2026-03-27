@@ -5,177 +5,578 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GRC131 - Comprehensive Exam</title>
 <style>
-  :root { --blue: #1e40af; --blue-light: #3b82f6; --green: #059669; --green-light: #10b981; --red: #ef4444; --orange: #f59e0b; --gray: #6b7280; --bg: #f1f5f9; }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: #1f2937; line-height: 1.5; }
-  .container { max-width: 800px; margin: 0 auto; padding: 20px; }
-  .start-page { min-height: 100vh; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); display: flex; align-items: center; justify-content: center; padding: 20px; }
-  .start-card { background: #fff; border-radius: 20px; max-width: 620px; width: 100%; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
-  .start-header { background: linear-gradient(135deg, var(--blue), var(--blue-light)); padding: 36px 32px 28px; text-align: center; color: #fff; }
-  .start-header .college { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.75; margin-bottom: 6px; }
-  .start-header h1 { font-size: 24px; font-weight: 700; }
-  .start-header .sub { font-size: 14px; opacity: 0.9; margin-top: 6px; }
-  .start-header .sub2 { font-size: 12px; opacity: 0.65; margin-top: 4px; }
-  .start-body { padding: 24px 32px 32px; }
-  .instructions { background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 14px; margin-bottom: 24px; font-size: 13px; color: var(--blue); line-height: 1.8; }
-  .label { display: block; font-size: 13px; font-weight: 700; color: var(--blue); margin-bottom: 8px; }
-  .program-btns { display: flex; gap: 10px; margin-bottom: 20px; }
-  .program-btn { flex: 1; padding: 14px 10px; border-radius: 12px; border: 2px solid #e5e7eb; background: #fff; cursor: pointer; text-align: center; transition: all 0.2s; }
-  .program-btn.active { border-color: var(--blue); background: linear-gradient(135deg, #eff6ff, #dbeafe); }
-  .program-btn .pname { font-size: 18px; font-weight: 800; color: #9ca3af; }
-  .program-btn.active .pname { color: var(--blue); }
-  .program-btn .desc { font-size: 11px; color: #b0b0b0; margin-top: 2px; }
-  .program-btn.active .desc { color: var(--blue-light); }
-  .search-box { position: relative; margin-bottom: 8px; }
-  .search-box input { width: 100%; padding: 10px 14px 10px 36px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 15px; outline: none; direction: rtl; font-family: inherit; }
-  .search-box input:focus { border-color: var(--blue-light); }
-  .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #9ca3af; pointer-events: none; }
-  .name-list { max-height: 250px; overflow-y: auto; border: 2px solid #e5e7eb; border-radius: 12px; background: #fafbfc; }
-  .name-item { padding: 10px 14px; cursor: pointer; direction: rtl; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f0f0f0; font-size: 14px; transition: background 0.15s; }
-  .name-item:last-child { border-bottom: none; }
-  .name-item:nth-child(even) { background: #f8fafc; }
-  .name-item:hover { background: #eff6ff !important; }
-  .name-item.selected { background: var(--blue) !important; color: #fff; font-weight: 700; }
-  .name-num { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #d1d5db; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #9ca3af; font-weight: 700; flex-shrink: 0; }
-  .name-item.selected .name-num { border-color: #fff; background: var(--blue-light); color: #fff; }
-  .confirmed { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 12px 16px; margin: 16px 0; direction: rtl; display: flex; align-items: center; gap: 10px; }
-  .confirmed .check { width: 36px; height: 36px; border-radius: 50%; background: #22c55e; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; flex-shrink: 0; }
-  .start-btn { width: 100%; padding: 14px 0; border: none; border-radius: 12px; color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
-  .start-btn:enabled { background: linear-gradient(135deg, var(--blue), var(--blue-light)); box-shadow: 0 4px 14px rgba(30,64,175,0.4); }
-  .start-btn:disabled { background: #d1d5db; cursor: not-allowed; }
-  .timer-bar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 6px 20px; text-align: center; }
-  .timer-display { display: inline-flex; align-items: center; gap: 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 5px 16px; }
-  .timer-time { font-size: 18px; font-weight: 700; font-family: 'Courier New', monospace; color: var(--blue); letter-spacing: 2px; min-width: 80px; }
-  .timer-warning .timer-time { color: var(--orange); }
-  .timer-danger .timer-time { color: var(--red); animation: pulse 1s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.5} }
-  .topbar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 10px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-  .topbar-inner { max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-  .badge { font-size: 10px; color: #fff; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
-  .badge.bom { background: var(--blue-light); } .badge.en { background: var(--green-light); }
-  .progress-bar { width: 90px; height: 8px; background: #e5e7eb; border-radius: 999px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue-light)); border-radius: 999px; transition: width 0.5s ease; }
-  .secnav { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 6px 20px; overflow-x: auto; }
-  .secnav-inner { max-width: 800px; margin: 0 auto; display: flex; gap: 4px; }
-  .secnav-btn { padding: 7px 14px; border: none; border-radius: 8px; font-size: 11px; font-weight: 500; background: transparent; color: var(--gray); cursor: pointer; }
-  .secnav-btn.active { background: var(--blue); color: #fff; font-weight: 700; }
-  .sec-header { background: #fff; border-radius: 16px; padding: 22px 26px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  .tag { padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; }
-  .q-card { background: #fff; border-radius: 14px; padding: 18px 22px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-left: 4px solid #e5e7eb; }
-  .q-card.answered { border-left-color: #22c55e; }
-  .q-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
-  .q-title .num { color: var(--blue-light); margin-right: 6px; }
-  .option { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; border: 2px solid #f3f4f6; background: #fafafa; cursor: pointer; font-size: 13px; margin-bottom: 6px; transition: all 0.15s; }
-  .option:hover { background: #eff6ff; }
-  .option.selected { border-color: var(--blue-light); background: #eff6ff; color: var(--blue); }
-  .radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #d1d5db; flex-shrink: 0; }
-  .option.selected .radio { border: 5px solid var(--blue-light); }
-  .tf-btns { display: flex; gap: 8px; }
-  .tf-btn { flex: 1; padding: 9px 0; border-radius: 10px; border: 2px solid #e5e7eb; background: #fff; color: var(--gray); font-weight: 600; font-size: 13px; cursor: pointer; }
-  .tf-btn.selected { border-color: var(--blue-light); background: #eff6ff; color: var(--blue); }
-  .word-bank { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 12px; color: #92400e; }
-  .desc-bank { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 12px; color: #166534; }
-  .match-row { background: #fff; border-radius: 14px; padding: 14px 22px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-left: 4px solid #e5e7eb; }
-  .match-row.answered { border-left-color: #22c55e; }
-  select { padding: 7px 14px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 13px; cursor: pointer; background: #fafafa; }
-  textarea { width: 100%; padding: 10px 12px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 13px; resize: vertical; font-family: inherit; line-height: 1.6; }
-  textarea:focus, select:focus { border-color: var(--blue-light); outline: none; }
-  .scenario-box { background: #fff; border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-  .scenario-box h3 { font-size: 15px; color: var(--blue); margin-bottom: 8px; }
-  .scenario-text { background: #f8fafc; border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.7; border-left: 3px solid var(--blue-light); }
-  .nav-btns { display: flex; justify-content: space-between; margin-top: 20px; gap: 10px; }
-  .nav-btn { padding: 11px 24px; border-radius: 12px; font-weight: 600; font-size: 13px; cursor: pointer; border: none; }
-  .prev-btn { border: 2px solid #e5e7eb !important; background: #fff; color: #374151; }
-  .prev-btn:disabled { color: #d1d5db; cursor: not-allowed; }
-  .next-btn { background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: #fff; }
-  .submit-btn { background: linear-gradient(135deg, var(--green), var(--green-light)); color: #fff; font-weight: 700; font-size: 14px; box-shadow: 0 4px 14px rgba(5,150,105,0.4); }
-  .used-tag { display: inline-block; font-size: 9px; background: #fee2e2; color: #991b1b; padding: 1px 6px; border-radius: 4px; margin-left: 6px; font-weight: 600; }
-  .result-page { min-height: 100vh; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); display: flex; align-items: center; justify-content: center; padding: 20px; }
-  .result-card { background: #fff; border-radius: 20px; max-width: 600px; width: 100%; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
-  .result-header { background: linear-gradient(135deg, var(--green), var(--green-light)); padding: 36px 32px; text-align: center; color: #fff; }
-  .result-body { padding: 28px 32px; }
-  .big-score { font-size: 56px; font-weight: 800; color: var(--blue); text-align: center; }
-  .big-score span { font-size: 22px; color: #9ca3af; }
-  .grade-badge { display: inline-block; padding: 4px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; }
-  .breakdown { background: #f8fafc; border-radius: 12px; padding: 16px; margin: 16px 0; }
-  .breakdown-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px solid #e5e7eb; }
-  .breakdown-row:last-child { border-bottom: none; }
-  .note-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 14px; font-size: 13px; color: #92400e; line-height: 1.6; direction: rtl; }
-  .time-result { background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px 16px; margin: 12px 0; text-align: center; }
-  .time-result .t { font-size: 28px; font-weight: 700; font-family: 'Courier New', monospace; color: var(--blue); }
-  .loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-  .loading-box { background: #fff; border-radius: 16px; padding: 32px 40px; text-align: center; }
-  .spinner { width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .hidden { display: none !important; }
+:root{--blue:#1e40af;--bl:#3b82f6;--green:#059669;--gl:#10b981;--red:#ef4444;--orange:#f59e0b;--gray:#6b7280;--bg:#f1f5f9}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:#1f2937;line-height:1.5}
+.ctr{max-width:800px;margin:0 auto;padding:20px}
+/* Start */
+.sp{min-height:100vh;background:linear-gradient(135deg,#0f172a,#1e3a5f,#0f172a);display:flex;align-items:center;justify-content:center;padding:20px}
+.sc{background:#fff;border-radius:20px;max-width:620px;width:100%;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,.3)}
+.sh{background:linear-gradient(135deg,var(--blue),var(--bl));padding:36px 32px 28px;text-align:center;color:#fff}
+.sh .c{font-size:13px;letter-spacing:3px;text-transform:uppercase;opacity:.75;margin-bottom:6px}
+.sh h1{font-size:24px;font-weight:700}
+.sh .s1{font-size:14px;opacity:.9;margin-top:6px}
+.sh .s2{font-size:12px;opacity:.65;margin-top:4px}
+.sb{padding:24px 32px 32px}
+.ins{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px;margin-bottom:20px;font-size:13px;color:var(--blue);line-height:1.8}
+.lbl{display:block;font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px}
+.pbs{display:flex;gap:10px;margin-bottom:20px}
+.pb{flex:1;padding:14px 10px;border-radius:12px;border:2px solid #e5e7eb;background:#fff;cursor:pointer;text-align:center;transition:.2s}
+.pb.a{border-color:var(--blue);background:linear-gradient(135deg,#eff6ff,#dbeafe)}
+.pb .pn{font-size:18px;font-weight:800;color:#9ca3af}.pb.a .pn{color:var(--blue)}
+.pb .pd{font-size:11px;color:#b0b0b0;margin-top:2px}.pb.a .pd{color:var(--bl)}
+.sbx{position:relative;margin-bottom:8px}
+.sbx input{width:100%;padding:10px 14px 10px 36px;border:2px solid #e5e7eb;border-radius:10px;font-size:15px;outline:none;direction:rtl;font-family:inherit}
+.sbx input:focus{border-color:var(--bl)}
+.si{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:16px;color:#9ca3af;pointer-events:none}
+.nl{max-height:250px;overflow-y:auto;border:2px solid #e5e7eb;border-radius:12px;background:#fafbfc}
+.ni{padding:10px 14px;cursor:pointer;direction:rtl;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f0f0f0;font-size:14px;transition:.15s}
+.ni:last-child{border-bottom:none}.ni:nth-child(even){background:#f8fafc}.ni:hover{background:#eff6ff!important}
+.ni.sel{background:var(--blue)!important;color:#fff;font-weight:700}
+.nn{width:22px;height:22px;border-radius:50%;border:2px solid #d1d5db;display:flex;align-items:center;justify-content:center;font-size:11px;color:#9ca3af;font-weight:700;flex-shrink:0}
+.ni.sel .nn{border-color:#fff;background:var(--bl);color:#fff}
+.cf{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:12px 16px;margin:16px 0;direction:rtl;display:flex;align-items:center;gap:10px}
+.cf .ck{width:36px;height:36px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0}
+.stb{width:100%;padding:14px 0;border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:.3s}
+.stb:enabled{background:linear-gradient(135deg,var(--blue),var(--bl));box-shadow:0 4px 14px rgba(30,64,175,.4)}
+.stb:disabled{background:#d1d5db;cursor:not-allowed}
+/* Warning */
+.wb{background:linear-gradient(135deg,#fef2f2,#fff1f2);border:2px solid var(--red);border-radius:14px;padding:18px 20px;margin-bottom:20px;direction:rtl;line-height:2}
+.wb .wt{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;color:#991b1b;margin-bottom:8px}
+.wb ul{margin:0;padding:0 20px;font-size:13px;color:#7f1d1d}.wb ul li{margin-bottom:4px}
+.wb .wf{margin-top:10px;font-size:12px;color:#991b1b;font-weight:700;text-align:center;padding:8px;background:#fee2e2;border-radius:8px}
+.ab{display:flex;align-items:flex-start;gap:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 14px;margin:16px 0;direction:rtl;cursor:pointer}
+.ab input{margin-top:3px;width:18px;height:18px;cursor:pointer}
+.ab label{font-size:13px;color:#92400e;cursor:pointer;font-weight:600}
+/* Blocked */
+.bp{min-height:100vh;background:linear-gradient(135deg,#450a0a,#7f1d1d,#450a0a);display:flex;align-items:center;justify-content:center;padding:20px}
+.bc{background:#fff;border-radius:20px;max-width:520px;width:100%;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,.4)}
+.bh{background:linear-gradient(135deg,#dc2626,#ef4444);padding:36px 32px;text-align:center;color:#fff}
+.bb{padding:28px 32px;direction:rtl;text-align:center}
+.atb{display:inline-block;background:#fee2e2;color:#991b1b;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700}
+/* Timer */
+.tmb{background:#fff;border-bottom:1px solid #e2e8f0;padding:6px 20px;text-align:center}
+.tmd{display:inline-flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:5px 16px}
+.tmt{font-size:18px;font-weight:700;font-family:'Courier New',monospace;color:var(--blue);letter-spacing:2px;min-width:80px}
+.tmw .tmt{color:var(--orange)}.tmd.tmx .tmt{color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+/* Topbar */
+.tb{background:#fff;border-bottom:1px solid #e2e8f0;padding:10px 20px;position:sticky;top:0;z-index:100;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.tbi{max-width:800px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.bdg{font-size:10px;color:#fff;padding:2px 8px;border-radius:999px;font-weight:600}
+.bdg.bom{background:var(--bl)}.bdg.en{background:var(--gl)}
+.pb2{width:90px;height:8px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+.pf{height:100%;background:linear-gradient(90deg,var(--blue),var(--bl));border-radius:999px;transition:width .5s}
+.sn{background:#fff;border-bottom:1px solid #e2e8f0;padding:6px 20px;overflow-x:auto}
+.sni{max-width:800px;margin:0 auto;display:flex;gap:4px}
+.snb{padding:7px 14px;border:none;border-radius:8px;font-size:11px;font-weight:500;background:transparent;color:var(--gray);cursor:pointer}
+.snb.a{background:var(--blue);color:#fff;font-weight:700}
+.shd{background:#fff;border-radius:16px;padding:22px 26px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tg{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600}
+.qc{background:#fff;border-radius:14px;padding:18px 22px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);border-left:4px solid #e5e7eb}
+.qc.aw{border-left-color:#22c55e}
+.qt{font-size:14px;font-weight:600;margin-bottom:12px}.qt .nm{color:var(--bl);margin-right:6px}
+.op{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;border:2px solid #f3f4f6;background:#fafafa;cursor:pointer;font-size:13px;margin-bottom:6px;transition:.15s}
+.op:hover{background:#eff6ff}.op.sl{border-color:var(--bl);background:#eff6ff;color:var(--blue)}
+.rd{width:18px;height:18px;border-radius:50%;border:2px solid #d1d5db;flex-shrink:0}.op.sl .rd{border:5px solid var(--bl)}
+.tfb{display:flex;gap:8px}
+.tf{flex:1;padding:9px 0;border-radius:10px;border:2px solid #e5e7eb;background:#fff;color:var(--gray);font-weight:600;font-size:13px;cursor:pointer}
+.tf.sl{border-color:var(--bl);background:#eff6ff;color:var(--blue)}
+.wbk{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#92400e}
+.dbk{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#166534}
+.mr{background:#fff;border-radius:14px;padding:14px 22px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;border-left:4px solid #e5e7eb}
+.mr.aw{border-left-color:#22c55e}
+select{padding:7px 14px;border:2px solid #e5e7eb;border-radius:10px;font-size:13px;cursor:pointer;background:#fafafa}
+textarea{width:100%;padding:10px 12px;border:2px solid #e5e7eb;border-radius:10px;font-size:13px;resize:vertical;font-family:inherit;line-height:1.6}
+textarea:focus,select:focus{border-color:var(--bl);outline:none}
+.scb{background:#fff;border-radius:14px;padding:22px 26px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.scb h3{font-size:15px;color:var(--blue);margin-bottom:8px}
+.sct{background:#f8fafc;border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:13px;line-height:1.7;border-left:3px solid var(--bl)}
+.nvb{display:flex;justify-content:space-between;margin-top:20px;gap:10px}
+.nv{padding:11px 24px;border-radius:12px;font-weight:600;font-size:13px;cursor:pointer;border:none}
+.pvb{border:2px solid #e5e7eb!important;background:#fff;color:#374151}.pvb:disabled{color:#d1d5db;cursor:not-allowed}
+.nxb{background:linear-gradient(135deg,var(--blue),var(--bl));color:#fff}
+.sub{background:linear-gradient(135deg,var(--green),var(--gl));color:#fff;font-weight:700;font-size:14px;box-shadow:0 4px 14px rgba(5,150,105,.4)}
+.ut{display:inline-block;font-size:9px;background:#fee2e2;color:#991b1b;padding:1px 6px;border-radius:4px;margin-left:6px;font-weight:600}
+/* Result */
+.rp{min-height:100vh;background:linear-gradient(135deg,#0f172a,#1e3a5f,#0f172a);display:flex;align-items:center;justify-content:center;padding:20px}
+.rc{background:#fff;border-radius:20px;max-width:600px;width:100%;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,.3)}
+.rh{background:linear-gradient(135deg,var(--green),var(--gl));padding:36px 32px;text-align:center;color:#fff}
+.rby{padding:28px 32px}
+.bs{font-size:56px;font-weight:800;color:var(--blue);text-align:center}.bs span{font-size:22px;color:#9ca3af}
+.gb{display:inline-block;padding:4px 16px;border-radius:999px;font-size:13px;font-weight:600}
+.bkd{background:#f8fafc;border-radius:12px;padding:16px;margin:16px 0}
+.bkr{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid #e5e7eb}.bkr:last-child{border-bottom:none}
+.ntb{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px;font-size:13px;color:#92400e;line-height:1.6;direction:rtl}
+.tr{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px 16px;margin:12px 0;text-align:center}
+.tr .tv{font-size:28px;font-weight:700;font-family:'Courier New',monospace;color:var(--blue)}
+.lo{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999}
+.lob{background:#fff;border-radius:16px;padding:32px 40px;text-align:center}
+.spn{width:40px;height:40px;border:4px solid #e5e7eb;border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hid{display:none!important}
+/* Admin Panel */
+.adm{min-height:100vh;background:linear-gradient(135deg,#1e1b4b,#312e81,#1e1b4b);display:flex;align-items:flex-start;justify-content:center;padding:20px}
+.adc{background:#fff;border-radius:20px;max-width:700px;width:100%;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,.3);margin-top:20px}
+.adh{background:linear-gradient(135deg,#7c3aed,#8b5cf6);padding:24px 28px;color:#fff;display:flex;justify-content:space-between;align-items:center}
+.adb{padding:24px 28px}
+.adtab{display:flex;gap:4px;margin-bottom:20px;background:#f3f4f6;border-radius:10px;padding:4px}
+.adtb{flex:1;padding:10px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--gray)}
+.adtb.a{background:#fff;color:#7c3aed;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.adinp{width:100%;padding:10px 14px;border:2px solid #e5e7eb;border-radius:10px;font-size:14px;margin-bottom:10px;direction:rtl;font-family:inherit}
+.adinp:focus{border-color:#8b5cf6;outline:none}
+.adbtn{padding:10px 20px;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.adbtn.pr{background:#7c3aed;color:#fff}.adbtn.pr:hover{background:#6d28d9}
+.adbtn.dn{background:#ef4444;color:#fff}.adbtn.dn:hover{background:#dc2626}
+.adbtn.sc{background:#059669;color:#fff}
+.adst{padding:10px 14px;border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;direction:rtl;font-size:13px}
+.adst:nth-child(odd){background:#f8fafc}.adst:nth-child(even){background:#fff}
+.adst .done{color:#22c55e;font-weight:700}.adst .pend{color:#9ca3af}
 </style>
 </head>
 <body>
 <script>
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzsFdwOfh3ZZvWa6N9AKrapXxUV-REDNKXIsA0MiFmSkr5wJLlyTN-ho8vcpOMJ83RrYg/exec";
-const BOM_STUDENTS = ["هديل فرج ابراهيم ابو شماله","نور فضل نافذ حمد","ندى علاء كمال ابو سويرح","حلا محسن أحمد الجمل","رغد رأفت يحيى القططي","داليا فتحي صبحي مكي","تالا محمد اسماعيل ابو عماره","اسماعيل محمد سليمان عويضه","رغد عيسى جمعه حمدان","حلا خالد عبد النجار","بتول ياسر خليل نصار","حسام عوني محمد ابوهربيد","هالة محمد خليل ابو حرب","اريج نشأت زهران الوحيدي","ميار أحمد سلامه ابو صوصين","تقوى وليد محمد بدران","ملك محمد عبد الرحمن ابو سخيله","بسنت أحمد محمد نصيف النجار","روند كرم جمعه ابوالحاج","لمى أحمد السيد عبد المحسن","الاء عمر منصور سليم","رهف سائد مصطفى المعلواني","روضة محمود عودة ابو طعيمه","روان حاتم عبد الله محسن","ايمان محمد سالم الرشايده","احمد محمد نعيم القدره","هبه عدنان شفيق الهمص","غرام شادي عبد الحكيم عيسى","رغد محسن احمد الجمل","رنين ايهاب نعيم عابد","رنين محمد عبد الرحمن الخطيب","سلمى منير صباح الشافعي","شهد صبحي عبد الله ابو حماد","عبد الكريم محمد اسماعيل صمد","ندى محمد عادل عوض","نور صبحي فاروق البوبلي","نور محمد مطر ابو سيف"];
-const EN_STUDENTS = ["محمود عبدالله ممدوح ابو عبيد","معاذ خالد محمد اسماعيل","تالا خالد جادالله عثمان","سمر جهاد فتحي جمعه","شهد انيس احمد ابو صلاح","حنين علي نايف كلاب","ريماس ادهم حربي العتال","مصطفى محمد علي ابو الوفا","فرح محمد خليل صبح","انهار عبد العظيم سليمان وادي","منة الله فارس محمد السطري","ضحى محمد عطيه ابو حميده","سما نبيل صبحي العاجز","تالا فكري اسماعيل تمراز","تالا سامر أحمد البحة","معاذ أحمد عبد المجيد عيسى","سندس علاء محمود زعرب","ثريا وليد احمد ابو حور","ريما عمر محمد صيدم","ايمان ابراهيم أحمد ابو نجا","سندس خالد عبد الحميد ابو دقه","سلوى محي الدين محمد ابو سنيمه","باسل يوسف جمعه ابو صبيح","رهف عماد عبد الحميد النواجحه","سندس سعيد ابراهيم شبير","معاذ محمود حمدان ابو عبيد","محمود محمد حسن شلوله","هيام وسام صبحي شهاب","هاجر اشرف بشير كلوسه","جنان نزار عبد الكريم الجبري","ميرفت محمد سعيد ابو هداف","رنيم كمال شحادة السردي","امل محمود عودة ابو طعيمه","رؤى وائل خليل ابو مصطفى","احمد زكي حسن ابو موسى","اسراء حسن صلاح ماضي","ريتاج عاهد سعد المصري","خالد مصطفى ابراهيم الشريحي","هلا ايهاب نايف عثمان","مسك فواز أحمد الشنطي","وسام هاني نعيم الجليس","ياسمين عبد الحليم أبو محسن","احمد عبد السلام أحمد صالحة","ازهار عبد الرؤوف فهيد الدياري","شادية قاسم سلمان القاضي","ملك طارق زياد الداهودي"];
-const SECTIONS=[{title:"Section 1: Multiple Choice Questions",subtitle:"Choose the correct answer. (2 marks each)",marks:20,level:"Basic",type:"mcq",questions:[{q:"What does IT stand for?",opts:["Internet Technology","Information Technology","Internal Transfer","Integrated Telephony"],c:1},{q:"Which of the following is an example of hardware?",opts:["Microsoft Word","Windows Operating System","Keyboard","Google Chrome"],c:2},{q:"What is the main function of the CPU?",opts:["Store data permanently","Display information on screen","Perform calculations and execute instructions","Connect to the internet"],c:2},{q:"Which type of memory is volatile?",opts:["ROM","Hard Disk","RAM","USB Flash Drive"],c:2},{q:"Which is an output device?",opts:["Mouse","Scanner","Keyboard","Printer"],c:3},{q:"A network within the same building is called:",opts:["WAN","LAN","Internet","VoIP"],c:1},{q:"Which storage unit is largest?",opts:["Kilobyte","Megabyte","Gigabyte","Terabyte"],c:3},{q:"The three Vs of Big Data are:",opts:["Volume, Velocity, Variety","Virtual, Visual, Verified","Voice, Video, Value","Volume, Virus, Virtual"],c:0},{q:"Cloud computing best means:",opts:["Storing data only locally","Delivering services over the internet","Using only mainframes","A type of antivirus"],c:1},{q:"IoT stands for:",opts:["Integration of Technology","Internet of Things","Internal Operating Tool","Information on Transfer"],c:1}]},{title:"Section 2: True or False",subtitle:"Select True or False. (1.5 marks each)",marks:15,level:"Basic",type:"tf",questions:[{q:"Software refers to physical components.",c:false},{q:"The CPU is the brain of the computer.",c:true},{q:"ROM is volatile memory.",c:false},{q:"A scanner is an input device.",c:true},{q:"A byte = 4 bits.",c:false},{q:"The motherboard connects all components.",c:true},{q:"E-Commerce = buying/selling online.",c:true},{q:"An Intranet is open to the public.",c:false},{q:"RSI can be caused by prolonged keyboard use.",c:true},{q:"A mainframe is small and portable.",c:false}]},{title:"Section 3: Fill in the Blanks",subtitle:"Select the correct word. (1.5 marks each)",marks:15,level:"Intermediate",type:"dropdown",bank:["CPU","RAM","ROM","GUI","VoIP","LAN","WAN","Terabyte","Operating System","Ergonomics"],questions:[{q:"The ______ performs all calculations.",c:"CPU"},{q:"______ is temporary working memory.",c:"RAM"},{q:"A ______ connects devices across large distances.",c:"WAN"},{q:"______ reduces physical strain on users.",c:"Ergonomics"},{q:"The ______ manages hardware for applications.",c:"Operating System"},{q:"A ______ uses icons and menus.",c:"GUI"},{q:"______ contains permanent BIOS instructions.",c:"ROM"},{q:"A ______ connects computers in one building.",c:"LAN"},{q:"One ______ = ~1,000 Gigabytes.",c:"Terabyte"},{q:"______ enables internet voice calls.",c:"VoIP"}]},{title:"Section 4: Matching",subtitle:"Match term with description. (1.5 marks each)",marks:15,level:"Intermediate",type:"matching",terms:["Hard Disk Drive (HDD)","Artificial Intelligence (AI)","Scanner","Intranet","Monitor (VDU)","IoT","Firewall","Computer Virus","SSD","B2C"],descs:[{l:"A",t:"Translates documents into digital files"},{l:"B",t:"Primary permanent storage"},{l:"C",t:"Closed private network"},{l:"D",t:"Simulation of human intelligence"},{l:"E",t:"Objects connected via sensors/internet"},{l:"F",t:"Visual display unit"},{l:"G",t:"Harmful programs destroying data"},{l:"H",t:"Protects network from unauthorized access"},{l:"I",t:"Business-to-consumer e-commerce"},{l:"J",t:"No moving parts, faster than HDD"}],map:{0:"B",1:"D",2:"A",3:"C",4:"F",5:"E",6:"H",7:"G",8:"J",9:"I"}},{title:"Section 5: Short Answer Questions",subtitle:"Answer in 2-4 sentences each.",marks:20,level:"Advanced",type:"essay",questions:[{q:"Explain the difference between hardware and software. Give one example of each.",m:4},{q:"What is the difference between RAM and ROM? Mention two differences.",m:4},{q:"Describe the IPOS cycle with a real-world example.",m:4},{q:"List three health/safety precautions for computer use.",m:4},{q:"Define AI and give two real-world examples.",m:4}]},{title:"Section 6: Practical Scenarios",subtitle:"Read each scenario and answer.",marks:15,level:"Advanced",type:"scenario",scenarios:[{title:"Hospital Reception",text:"A hospital reception uses desktops for check-in, barcode scanners for wristband ID, and printers for appointment slips, connected through an internal network.",questions:[{q:"Identify TWO input devices and ONE output device.",m:3},{q:"What type of network (LAN/WAN)? Justify.",m:2}]},{title:"Business Office Security",text:"An accounting office found computers infected after an employee opened an unknown email attachment. No updated antivirus.",questions:[{q:"How did the virus likely infect the computers?",m:2},{q:"List THREE prevention steps.",m:3}]},{title:"Data vs Information",text:"A manager collects raw numbers: 120, 95, 200, 150, 88. After processing, the system shows revenue increased 15%.",questions:[{q:"What is DATA vs INFORMATION here? Explain.",m:3},{q:"Name ONE software and ONE output device for the report.",m:2}]}]}];
+// ★★★ CONFIG — غيّر هذه القيم لكل امتحان جديد ★★★
+var CFG={
+  url:"https://script.google.com/macros/s/AKfycbz4kloPJy_1Fxv29A4HoV52PWwQbj1eNvhU011xtGGUMQ73QwAMWQ13OrfTmTP1EO-JAA/exec",
+  examId:"GRC131_U1_2026",
+  title:"Introduction to Computer Skills",
+  code:"GRC131",
+  unit:"Unit 1: Basic Concepts of IT",
+  instructor:"Khalil El Halabi",
+  college:"UNRWA — Khan Younis Training College",
+  timeLimit:90 // minutes
+};
+var BOM=["هديل فرج ابراهيم ابو شماله","نور فضل نافذ حمد","ندى علاء كمال ابو سويرح","حلا محسن أحمد الجمل","رغَد رأفت يحيى القططي","داليا فتحي صبحي مكي","تالا محمد اسماعيل ابو عماره","اسماعيل محمد سليمان عويضه","رغد عيسى جمعه حمدان","حلا خالد عبد النجار","بتول ياسر خليل نصار","حسام عوني محمد ابوهربيد","هالة محمد خليل ابو حرب","اريج نشأت زهران الوحيدي","ميار أحمد سلامه ابو صوصين","تقوى وليد محمد بدران","ملك محمد عبد الرحمن ابو سخيله","أزهار بسام جابر ابو خالد","ندى أحمد محمد شلحه","سعدي علاء سعدي لبد","منى ياسين موسى ابو موسى","سما محمد عبدالله ابو معمر","مهند أيمن محمد القدره","عبد الله فضل خضر القهوجي","سما نضال زكي ياغي","بثينة سامي ابراهيم ابو سنيمه","وعد عمر خالد الشوربجي","بسنت أحمد محمد نصيف النجار","روند كرم جمعه ابوالحاج","لمى أحمد السيد عبد المحسن","الاء عمر منصور سليم","رهف سائد مصطفى المعلواني","روضة محمود عودة ابو طعيمه","روان حاتم عبد الله محسن","ايمان محمد سالم الرشايده","احمد محمد نعيم القدره","هبه عدنان شفيق الهمص","غرام شادي عبد الحكيم عيسى","رغد محسن احمد الجمل","رنين ايهاب نعيم عابد","رنين محمد عبد الرحمن الخطيب","سلمى منير صباح الشافعي","شهد صبحي عبد الله ابو حماد","عبد الكريم محمد اسماعيل صمد","ندى محمد عادل عوض","نور صبحي فاروق البوبلي","نور محمد مطر ابو سيف"];
+var EN=["محمود عبدالله ممدوح ابو عبيد","معاذ خالد محمد اسماعيل","تالا خالد جادالله عثمان","سمر جهاد فتحي جمعه","شهد انيس احمد ابو صلاح","حنين علي نايف كلاب","ريماس ادهم حربي العتال","مصطفى محمد علي ابو الوفا","فرح محمد خليل صبح","انهار عبد العظيم سليمان وادي","منة الله فارس محمد السطري","ضحى محمد عطيه ابو حميده","سما نبيل صبحي العاجز","تالا فكري اسماعيل تمراز","تالا سامر أحمد البحة","معاذ أحمد عبد المجيد عيسى","سندس علاء محمود زعرب","ثريا وليد احمد ابو حور","ريما عمر محمد صيدم","ايمان ابراهيم أحمد ابو نجا","سندس خالد عبد الحميد ابو دقه","سلوى محي الدين محمد ابو سنيمه","باسل يوسف جمعه ابو صبيح","رهف عماد عبد الحميد النواجحه","سندس سعيد ابراهيم شبير","معاذ محمود حمدان ابو عبيد","محمود محمد حسن شلوله","هيام وسام صبحي شهاب","هاجر اشرف بشير كلوسه","جنان نزار عبد الكريم الجبري","ميرفت محمد سعيد ابو هداف","رنيم كمال شحادة السردي","أمل محمود عودة ابو طعيمه","رؤى وائل خليل ابو مصطفى","احمد زكي حسن ابو موسى","اسراء حسن صلاح ماضي","ريتاج عاهد سعد المصري","خالد مصطفى ابراهيم الشريحي","هلا ايهاب نايف عثمان","مسك فواز أحمد الشنطي","وسام هاني نعيم الجليس","ياسمين عبد الحليم أبو محسن","أحمد عبد السلام أحمد صالحة","أزهار عبد الرؤوف فهيد الدباري","شادية قاسم سلمان القاضي","ملك طارق زياد الداهودي"];
+var SEC=[{t:"Section 1: Multiple Choice",st:"Choose the correct answer. (2 marks each)",mk:20,lv:"Basic",tp:"mcq",qs:[{q:"What does IT stand for?",o:["Internet Technology","Information Technology","Internal Transfer","Integrated Telephony"],c:1},{q:"Which is hardware?",o:["Microsoft Word","Windows OS","Keyboard","Google Chrome"],c:2},{q:"Main function of CPU?",o:["Store data","Display info","Perform calculations","Connect to internet"],c:2},{q:"Which memory is volatile?",o:["ROM","Hard Disk","RAM","USB Drive"],c:2},{q:"Which is an output device?",o:["Mouse","Scanner","Keyboard","Printer"],c:3},{q:"Network in same building?",o:["WAN","LAN","Internet","VoIP"],c:1},{q:"Largest storage unit?",o:["Kilobyte","Megabyte","Gigabyte","Terabyte"],c:3},{q:"Three Vs of Big Data?",o:["Volume, Velocity, Variety","Virtual, Visual, Verified","Voice, Video, Value","Volume, Virus, Virtual"],c:0},{q:"Cloud computing means?",o:["Local storage only","Services over internet","Only mainframes","Antivirus type"],c:1},{q:"IoT stands for?",o:["Integration of Technology","Internet of Things","Internal Operating Tool","Information on Transfer"],c:1}]},{t:"Section 2: True or False",st:"Select True or False. (1.5 marks each)",mk:15,lv:"Basic",tp:"tf",qs:[{q:"Software = physical components.",c:false},{q:"CPU is the brain of computer.",c:true},{q:"ROM is volatile memory.",c:false},{q:"Scanner is an input device.",c:true},{q:"A byte = 4 bits.",c:false},{q:"Motherboard connects all components.",c:true},{q:"E-Commerce = buying/selling online.",c:true},{q:"Intranet is open to public.",c:false},{q:"RSI from prolonged keyboard use.",c:true},{q:"Mainframe is small and portable.",c:false}]},{t:"Section 3: Fill in the Blanks",st:"Select the correct word. (1.5 marks each)",mk:15,lv:"Intermediate",tp:"dd",bk:["CPU","RAM","ROM","GUI","VoIP","LAN","WAN","Terabyte","Operating System","Ergonomics"],qs:[{q:"The ______ performs all calculations.",c:"CPU"},{q:"______ is temporary working memory.",c:"RAM"},{q:"A ______ connects across large distances.",c:"WAN"},{q:"______ reduces physical strain.",c:"Ergonomics"},{q:"The ______ manages hardware.",c:"Operating System"},{q:"A ______ uses icons and menus.",c:"GUI"},{q:"______ has permanent BIOS instructions.",c:"ROM"},{q:"A ______ connects in one building.",c:"LAN"},{q:"One ______ ≈ 1,000 GB.",c:"Terabyte"},{q:"______ enables internet voice calls.",c:"VoIP"}]},{t:"Section 4: Matching",st:"Match term with description. (1.5 marks each)",mk:15,lv:"Intermediate",tp:"mt",tr:["Hard Disk (HDD)","AI","Scanner","Intranet","Monitor (VDU)","IoT","Firewall","Computer Virus","SSD","B2C"],ds:[{l:"A",d:"Digitizes physical documents"},{l:"B",d:"Primary permanent storage"},{l:"C",d:"Closed private network"},{l:"D",d:"Simulates human intelligence"},{l:"E",d:"Objects connected via sensors"},{l:"F",d:"Visual display unit"},{l:"G",d:"Harmful programs"},{l:"H",d:"Protects from unauthorized access"},{l:"I",d:"Business-to-consumer"},{l:"J",d:"No moving parts, faster than HDD"}],mp:{0:"B",1:"D",2:"A",3:"C",4:"F",5:"E",6:"H",7:"G",8:"J",9:"I"}},{t:"Section 5: Short Answer",st:"Answer in 2-4 sentences.",mk:20,lv:"Advanced",tp:"es",qs:[{q:"Difference between hardware and software? Example each.",m:4},{q:"Difference between RAM and ROM? Two differences.",m:4},{q:"Describe IPOS cycle with real-world example.",m:4},{q:"Three health/safety precautions for computer use.",m:4},{q:"Define AI. Two real-world examples.",m:4}]},{t:"Section 6: Practical Scenarios",st:"Read and answer.",mk:15,lv:"Advanced",tp:"sc",scs:[{t:"Hospital Reception",tx:"Hospital uses desktops for check-in, barcode scanners for wristband ID, printers for slips, connected internally.",qs:[{q:"TWO input devices + ONE output device?",m:3},{q:"LAN or WAN? Justify.",m:2}]},{t:"Office Security",tx:"Accounting office infected after employee opened unknown email attachment. No updated antivirus.",qs:[{q:"How did virus infect?",m:2},{q:"THREE prevention steps.",m:3}]},{t:"Data vs Information",tx:"Manager collects: 120, 95, 200, 150, 88. System shows revenue up 15%.",qs:[{q:"What is DATA vs INFORMATION?",m:3},{q:"ONE software + ONE output device?",m:2}]}]}];
 
-let S={page:"start",sec:0,ans:{},name:"",prog:"",search:"",loading:false,score:null,scores:null,startTime:null,elapsed:"00:00:00",timerId:null};
-function getA(si,qi){return S.ans[si+"-"+qi]??null}
-function setA(si,qi,v,skip){S.ans[si+"-"+qi]=v;if(!skip)render()}
-function getUsed(si){let u={};let sec=SECTIONS[si];let n=sec.type==="matching"?sec.terms.length:sec.type==="dropdown"?sec.questions.length:0;for(let i=0;i<n;i++){let v=getA(si,i);if(v)u[v]=true}return u}
-function calcScores(){let s1=0,s2=0,s3=0,s4=0;SECTIONS[0].questions.forEach((q,i)=>{if(getA(0,i)===q.c)s1+=2});SECTIONS[1].questions.forEach((q,i)=>{let a=getA(1,i);if(a!==null&&(a==="true")===q.c)s2+=1.5});SECTIONS[2].questions.forEach((q,i)=>{if(getA(2,i)===q.c)s3+=1.5});SECTIONS[3].terms.forEach((_,i)=>{if(getA(3,i)===SECTIONS[3].map[i])s4+=1.5});return{s1,s2,s3,s4,total:s1+s2+s3+s4}}
-function countAns(){let c=0,t=0;SECTIONS.forEach((s,si)=>{if(s.type==="mcq"||s.type==="tf"||s.type==="dropdown")s.questions.forEach((_,qi)=>{t++;if(getA(si,qi)!==null)c++});else if(s.type==="matching")s.terms.forEach((_,qi)=>{t++;if(getA(si,qi)!==null)c++});else if(s.type==="essay")s.questions.forEach((_,qi)=>{t++;if(getA(si,qi)&&getA(si,qi).trim())c++});else if(s.type==="scenario")s.scenarios.forEach((sc,sci)=>sc.questions.forEach((_,qi)=>{t++;if(getA(si,sci+"-"+qi)&&getA(si,sci+"-"+qi).trim())c++}))});return{c,t}}
-function startTimer(){S.startTime=Date.now();S.timerId=setInterval(()=>{let d=Date.now()-S.startTime;let h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);S.elapsed=(h<10?"0"+h:h)+":"+(m<10?"0"+m:m)+":"+(s<10?"0"+s:s);let el=document.getElementById("tt");if(el)el.textContent=S.elapsed;let td=document.getElementById("td");if(td){let mins=d/60000;td.className="timer-display"+(mins>=80?" timer-danger":mins>=60?" timer-warning":"")}},1000)}
-function stopTimer(){if(S.timerId){clearInterval(S.timerId);S.timerId=null}}
-async function submitExam(){stopTimer();let sc=calcScores();S.scores=sc;S.score=sc.total;let ea=SECTIONS[4].questions.map((_,qi)=>getA(4,qi)||"");let sa=[];SECTIONS[5].scenarios.forEach((c,ci)=>c.questions.forEach((_,qi)=>sa.push(getA(5,ci+"-"+qi)||"")));if(WEBAPP_URL&&WEBAPP_URL!=="PASTE_YOUR_WEBAPP_URL_HERE"){S.loading=true;render();try{await sendToSheets({studentName:S.name,program:S.prog,sectionScores:sc,essayAnswers:ea,scenarioAnswers:sa,duration:S.elapsed,attemptNumber:1,penaltyApplied:false})}catch(e){console.log(e)}S.loading=false}S.page="result";render();window.scrollTo(0,0)}
-function sendToSheets(data){return new Promise(function(resolve){var iframe=document.createElement("iframe");iframe.name="submitFrame";iframe.style.display="none";document.body.appendChild(iframe);var form=document.createElement("form");form.method="POST";form.action=WEBAPP_URL;form.target="submitFrame";var fields={studentName:data.studentName,program:data.program,s1:data.sectionScores.s1,s2:data.sectionScores.s2,s3:data.sectionScores.s3,s4:data.sectionScores.s4,duration:data.duration,attemptNumber:data.attemptNumber||1,penaltyApplied:data.penaltyApplied?"true":"false",essayAnswers:data.essayAnswers.join("|||"),scenarioAnswers:data.scenarioAnswers.join("|||"),allAnswers:JSON.stringify(S.ans)};for(var key in fields){var input=document.createElement("input");input.type="hidden";input.name=key;input.value=fields[key];form.appendChild(input)}document.body.appendChild(form);form.submit();setTimeout(function(){document.body.removeChild(form);document.body.removeChild(iframe);resolve()},3000)})}
-function handleText(el){let si=+el.dataset.si,qi=el.dataset.qi;let qp=isNaN(+qi)?qi:(qi.includes("-")?qi:+qi);setA(si,qp,el.value,true);let card=el.closest('.q-card');if(card){if(el.value.trim())card.classList.add('answered');else card.classList.remove('answered')}}
-function pickName(i){let sts=S.prog==="BOM"?BOM_STUDENTS:EN_STUDENTS;let f=sts.filter(s=>s.includes(S.search));S.name=f[i];render()}
-function goSec(i){if(i>=0&&i<SECTIONS.length){S.sec=i;render();window.scrollTo(0,0)}}
+// Anti-cheat
+function aKey(n,p){return CFG.examId+"_"+p+"_"+n.replace(/\s/g,"_")}
+function aGet(n,p){try{var d=localStorage.getItem(aKey(n,p));return d?JSON.parse(d):{c:0,s:[],ts:[]}}catch(e){return{c:0,s:[],ts:[]}}}
+function aSave(n,p,sc){try{var d=aGet(n,p);d.c++;d.s.push(sc);d.ts.push(new Date().toISOString());localStorage.setItem(aKey(n,p),JSON.stringify(d))}catch(e){}}
+function aBlocked(n,p){return aGet(n,p).c>=1}
+// Reset student attempt
+function aReset(n,p){try{localStorage.removeItem(aKey(n,p))}catch(e){}}
 
-function render(){
-let app=document.getElementById("app");
-let ll=document.getElementById("ll");
-if(S.loading){if(ll)ll.classList.remove("hidden");return}else{if(ll)ll.classList.add("hidden")}
-if(S.page==="start")return rStart(app);
-if(S.page==="result")return rResult(app);
-rExam(app);
+// ★★★ ADMIN PANEL ★★★
+var ADMIN_PASS="admin2026"; // ← غيّر كلمة السر هنا
+var ADM={show:false,tab:"reset",addName:"",addProg:"BOM",msg:"",msgType:""};
+
+function openAdmin(){
+  var pass=prompt("🔐 Enter Admin Password / أدخل كلمة سر المدير:");
+  if(pass===ADMIN_PASS){ADM.show=true;S.pg="admin";R()}
+  else if(pass!==null){alert("❌ Wrong password / كلمة سر خاطئة")}
+}
+function closeAdmin(){ADM.show=false;S.pg="start";S.nm="";S.pr="";S.ag=false;R()}
+function admTab(t){ADM.tab=t;ADM.msg="";R()}
+
+function admAddStudent(){
+  var name=document.getElementById("adm-name").value.trim();
+  var prog=ADM.addProg;
+  if(!name){ADM.msg="أدخل اسم الطالب";ADM.msgType="err";R();return}
+  var list=prog==="BOM"?BOM:EN;
+  if(list.indexOf(name)!==-1){ADM.msg="هذا الاسم موجود مسبقاً";ADM.msgType="err";R();return}
+  list.push(name);
+  ADM.msg="✅ تمت إضافة: "+name+" ("+prog+")";ADM.msgType="ok";R()
 }
 
-function rStart(app){
-let sts=S.prog==="BOM"?BOM_STUDENTS:S.prog==="EN"?EN_STUDENTS:[];
-let f=sts.filter(s=>s.includes(S.search));
-let nl="";
-if(S.prog){
-let items=f.length===0?'<div style="padding:20px;text-align:center;color:#9ca3af;direction:rtl">لا توجد نتائج</div>':f.map((n,i)=>{let sel=S.name===n;let idx=sts.indexOf(n)+1;return'<div class="name-item'+(sel?' selected':'')+'" onclick="pickName('+i+')"><div class="name-num">'+(sel?"✓":idx)+'</div><span>'+n+'</span></div>'}).join("");
-nl='<div style="margin-bottom:20px"><div class="label">Step 2: Select your name / اختر اسمك</div><div class="search-box"><input id="ns" value="'+S.search+'" oninput="S.search=this.value;S.name=\'\';render()" placeholder="ابحث عن اسمك..."><span class="search-icon">🔍</span></div><div class="name-list">'+items+'</div><div style="font-size:11px;color:#9ca3af;margin-top:6px;text-align:right;direction:rtl">إجمالي: '+sts.length+' | نتائج: '+f.length+'</div></div>'}
-let cf=S.name?'<div class="confirmed"><div class="check">✓</div><div><div style="font-size:15px;font-weight:700;color:#166534">'+S.name+'</div><div style="font-size:12px;color:#4ade80">'+(S.prog==="BOM"?"Business Office Management":"Emergency Nursing")+'</div></div></div>':"";
-app.innerHTML='<div class="start-page"><div class="start-card"><div class="start-header"><div class="college">UNRWA — Khan Younis Training College</div><h1>Introduction to Computer Skills</h1><div class="sub">GRC131 — Comprehensive Exam</div><div class="sub2">Unit 1: Basic Concepts of IT</div><div class="sub2">Instructor: Khalil El Halabi</div></div><div class="start-body"><div class="instructions"><strong>Exam Instructions / تعليمات:</strong><br>• 100 marks — 6 sections — 90 min<br>• Sections 1–4: Auto-graded<br>• Sections 5–6: Manual grading<br>• ⏱ Timer starts on "Start Exam"</div><div class="label">Step 1: Select program / اختر تخصصك</div><div class="program-btns"><div class="program-btn'+(S.prog==="BOM"?" active":"")+'" onclick="S.prog=\'BOM\';S.name=\'\';S.search=\'\';render()"><div class="pname">BOM</div><div class="desc">Business Office Management</div><div style="font-size:10px;color:#aaa;margin-top:2px">'+BOM_STUDENTS.length+' students</div></div><div class="program-btn'+(S.prog==="EN"?" active":"")+'" onclick="S.prog=\'EN\';S.name=\'\';S.search=\'\';render()"><div class="pname">EN</div><div class="desc">Emergency Nursing</div><div style="font-size:10px;color:#aaa;margin-top:2px">'+EN_STUDENTS.length+' students</div></div></div>'+nl+cf+'<button class="start-btn" '+(S.name&&S.prog?'onclick="S.page=\'exam\';startTimer();render();window.scrollTo(0,0)"':'disabled')+'>Start Exam — ابدأ الامتحان →</button></div></div></div>'
+function admResetStudent(name,prog){
+  if(confirm("هل تريد السماح لـ "+name+" بالتقديم مرة أخرى؟\nAllow "+name+" to retake?")){
+    aReset(name,prog);
+    ADM.msg="✅ تم إعادة تعيين: "+name;ADM.msgType="ok";R()
+  }
 }
 
-function rExam(app){
-let sec=SECTIONS[S.sec],{c,t}=countAns(),pct=Math.round((c/t)*100);
-let lc={Basic:"#22c55e",Intermediate:"#f59e0b",Advanced:"#ef4444"}[sec.level];
-let sn=SECTIONS.map((s,i)=>'<button class="secnav-btn'+(S.sec===i?' active':'')+'" onclick="goSec('+i+')">'+(i+1)+'</button>').join("");
-let ct="";
-if(sec.type==="mcq"){ct=sec.questions.map((q,qi)=>{let a=getA(S.sec,qi);return'<div class="q-card'+(a!==null?' answered':'')+'"><div class="q-title"><span class="num">Q'+(qi+1)+'.</span>'+q.q+'</div>'+q.opts.map((o,oi)=>'<div class="option'+(a===oi?' selected':'')+'" onclick="setA('+S.sec+','+qi+','+oi+')"><div class="radio"></div><span>'+String.fromCharCode(97+oi)+') '+o+'</span></div>').join("")+'</div>'}).join("")}
-else if(sec.type==="tf"){ct=sec.questions.map((q,qi)=>{let a=getA(S.sec,qi);return'<div class="q-card'+(a!==null?' answered':'')+'"><div class="q-title"><span class="num">Q'+(qi+1)+'.</span>'+q.q+'</div><div class="tf-btns"><button class="tf-btn'+(a==="true"?' selected':'')+'" onclick="setA('+S.sec+','+qi+',\'true\')">✓ True</button><button class="tf-btn'+(a==="false"?' selected':'')+'" onclick="setA('+S.sec+','+qi+',\'false\')">✗ False</button></div></div>'}).join("")}
-else if(sec.type==="dropdown"){let u=getUsed(S.sec);ct='<div class="word-bank"><strong>Word Bank:</strong> '+sec.bank.map(w=>'<span style="'+(u[w]?'text-decoration:line-through;color:#9ca3af':'')+'">'+w+'</span>').join(" • ")+'</div>';ct+=sec.questions.map((q,qi)=>{let a=getA(S.sec,qi)||"";let opts=sec.bank.map(w=>{let uo=false;for(let i=0;i<sec.questions.length;i++){if(i!==qi&&getA(S.sec,i)===w){uo=true;break}}return'<option value="'+w+'" '+(a===w?'selected':'')+(uo?' style="color:#9ca3af"':'')+'>'+w+(uo?' ✗':'')+'</option>'}).join("");return'<div class="q-card'+(a?' answered':'')+'"><div class="q-title"><span class="num">Q'+(qi+1)+'.</span>'+q.q+'</div><select onchange="setA('+S.sec+','+qi+',this.value||null)"><option value="">-- Select --</option>'+opts+'</select></div>'}).join("")}
-else if(sec.type==="matching"){let u=getUsed(S.sec);ct='<div class="desc-bank"><strong>Descriptions:</strong>'+sec.descs.map(d=>'<div style="'+(u[d.l]?'text-decoration:line-through;color:#9ca3af':'')+'"><strong>'+d.l+'.</strong> '+d.t+(u[d.l]?' <span class="used-tag">USED</span>':'')+'</div>').join("")+'</div>';ct+=sec.terms.map((term,qi)=>{let a=getA(S.sec,qi)||"";let opts=sec.descs.map(d=>{let uo=false;for(let i=0;i<sec.terms.length;i++){if(i!==qi&&getA(S.sec,i)===d.l){uo=true;break}}return'<option value="'+d.l+'" '+(a===d.l?'selected':'')+(uo?' style="color:#9ca3af"':'')+'>'+d.l+(uo?' ✗':'')+'</option>'}).join("");return'<div class="match-row'+(a?' answered':'')+'"><span style="font-size:13px;font-weight:600">'+(qi+1)+'. '+term+'</span><select onchange="setA('+S.sec+','+qi+',this.value||null)"><option value="">--</option>'+opts+'</select></div>'}).join("")}
-else if(sec.type==="essay"){ct=sec.questions.map((q,qi)=>{let a=getA(S.sec,qi)||"";return'<div class="q-card'+(a.trim()?' answered':'')+'"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px"><div class="q-title" style="margin:0;flex:1"><span class="num">Q'+(qi+1)+'.</span>'+q.q+'</div><span style="font-size:11px;color:#9ca3af">'+q.m+' marks</span></div><textarea rows="4" placeholder="Type your answer here..." data-si="'+S.sec+'" data-qi="'+qi+'" oninput="handleText(this)">'+a+'</textarea></div>'}).join("")}
-else if(sec.type==="scenario"){ct=sec.scenarios.map((sc,sci)=>{let qs=sc.questions.map((q,qi)=>{let a=getA(S.sec,sci+"-"+qi)||"";return'<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:6px"><p style="font-size:13px;font-weight:600">'+String.fromCharCode(97+qi)+') '+q.q+'</p><span style="font-size:11px;color:#9ca3af">'+q.m+' marks</span></div><textarea rows="3" placeholder="Type your answer..." data-si="'+S.sec+'" data-qi="'+sci+'-'+qi+'" oninput="handleText(this)">'+a+'</textarea></div>'}).join("");return'<div class="scenario-box"><h3>Scenario '+(sci+1)+': '+sc.title+'</h3><div class="scenario-text">'+sc.text+'</div>'+qs+'</div>'}).join("")}
-let nav='<div class="nav-btns"><button class="nav-btn prev-btn" '+(S.sec===0?'disabled':'')+' onclick="goSec('+(S.sec-1)+')">← Previous</button>'+(S.sec<SECTIONS.length-1?'<button class="nav-btn next-btn" onclick="goSec('+(S.sec+1)+')">Next →</button>':'<button class="nav-btn submit-btn" onclick="if(confirm(\'Submit exam?\\nتسليم الامتحان؟\'))submitExam()">✓ Submit — تسليم</button>')+'</div>';
-app.innerHTML='<div class="topbar"><div class="topbar-inner"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--blue)">GRC131</span><span class="badge '+S.prog.toLowerCase()+'">'+S.prog+'</span><span style="font-size:12px;color:var(--gray);direction:rtl">'+S.name+'</span></div><div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--gray)"><span>'+c+'/'+t+'</span><div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div></div></div></div><div class="timer-bar"><div class="timer-display" id="td"><span style="font-size:16px">⏱</span><span class="timer-time" id="tt">'+S.elapsed+'</span><span style="font-size:10px;color:var(--gray)">Elapsed</span></div></div><div class="secnav"><div class="secnav-inner">'+sn+'</div></div><div class="container"><div class="sec-header" style="border-top:4px solid '+lc+'"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px"><div><h2 style="font-size:18px">'+sec.title+'</h2><p style="font-size:13px;color:var(--gray);margin-top:5px">'+sec.subtitle+'</p></div><div style="display:flex;gap:6px"><span class="tag" style="background:'+lc+'20;color:'+lc+'">'+sec.level+'</span><span class="tag" style="background:#f0f0f0;color:#555">'+sec.marks+' marks</span></div></div></div>'+ct+nav+'</div>'
+function admResetAll(prog){
+  if(confirm("⚠️ إعادة تعيين جميع طلاب "+prog+"؟\nReset ALL "+prog+" students?")){
+    var list=prog==="BOM"?BOM:EN;
+    list.forEach(function(n){aReset(n,prog)});
+    ADM.msg="✅ تم إعادة تعيين جميع طلاب "+prog;ADM.msgType="ok";R()
+  }
 }
 
-function rResult(app){
-let s=S.scores,am=65,pct=Math.round((S.score/am)*100);
-let g=pct>=80?"Excellent":pct>=60?"Good":pct>=40?"Needs Improvement":"Below Expectations";
-let gb=pct>=80?"#dcfce7":pct>=60?"#fef9c3":"#fee2e2";
-let gc=pct>=80?"#166534":pct>=60?"#854d0e":"#991b1b";
-app.innerHTML='<div class="result-page"><div class="result-card"><div class="result-header"><div style="font-size:48px;margin-bottom:8px">✓</div><h2 style="font-size:22px">Exam Submitted!</h2><h3 style="margin:8px 0 0;font-size:17px;direction:rtl">'+S.name+'</h3><p style="opacity:0.7;margin:4px 0 0;font-size:13px">'+(S.prog==="BOM"?"Business Office Management":"Emergency Nursing")+'</p></div><div class="result-body"><div class="time-result"><div style="font-size:12px;color:var(--gray);margin-bottom:4px">⏱ Time Taken / الوقت المستغرق</div><div class="t">'+S.elapsed+'</div></div><div style="text-align:center;margin-bottom:24px"><div class="big-score">'+S.score+'<span>/'+am+'</span></div><div style="font-size:14px;color:#6b7280">Auto-Graded (Sections 1–4)</div><div style="margin-top:12px"><span class="grade-badge" style="background:'+gb+';color:'+gc+'">'+g+' — '+pct+'%</span></div></div><div class="breakdown"><div style="font-size:13px;font-weight:600;margin-bottom:10px">Breakdown:</div><div class="breakdown-row"><span>Multiple Choice</span><span style="font-weight:700;color:var(--blue)">'+s.s1+'/20</span></div><div class="breakdown-row"><span>True/False</span><span style="font-weight:700;color:var(--blue)">'+s.s2+'/15</span></div><div class="breakdown-row"><span>Fill in Blanks</span><span style="font-weight:700;color:var(--blue)">'+s.s3+'/15</span></div><div class="breakdown-row" style="border:none"><span>Matching</span><span style="font-weight:700;color:var(--blue)">'+s.s4+'/15</span></div></div><div class="note-box"><strong>ملاحظة:</strong> القسم 5 و 6 (35 درجة) تحتاج تصحيح يدوي. الدرجة النهائية ستُحدّث بعد المراجعة.</div></div></div></div>'
+function rAdmin(app){
+  var msgHTML=ADM.msg?'<div style="padding:10px 14px;border-radius:10px;margin-bottom:16px;font-size:13px;font-weight:600;background:'+(ADM.msgType==="ok"?"#f0fdf4;color:#166534;border:1px solid #bbf7d0":"#fef2f2;color:#991b1b;border:1px solid #fecaca")+'">'+ADM.msg+'</div>':"";
+  
+  var contentHTML="";
+  
+  if(ADM.tab==="add"){
+    contentHTML='<h3 style="font-size:16px;margin-bottom:16px;color:#1e1b4b">➕ إضافة طالب جديد / Add New Student</h3>'+msgHTML+'<div style="margin-bottom:12px"><div class="lbl">اسم الطالب / Student Name</div><input class="adinp" id="adm-name" placeholder="أدخل الاسم الرباعي..."></div><div style="margin-bottom:16px"><div class="lbl">التخصص / Program</div><div style="display:flex;gap:8px"><button class="adbtn '+(ADM.addProg==="BOM"?"pr":"sc")+'" onclick="ADM.addProg=\'BOM\';R()" style="flex:1">BOM ('+BOM.length+')</button><button class="adbtn '+(ADM.addProg==="EN"?"pr":"sc")+'" onclick="ADM.addProg=\'EN\';R()" style="flex:1">EN ('+EN.length+')</button></div></div><button class="adbtn pr" onclick="admAddStudent()" style="width:100%;padding:12px">➕ إضافة / Add Student</button>';
+  }
+  
+  else if(ADM.tab==="reset"){
+    var allStudents=[];
+    BOM.forEach(function(n){var d=aGet(n,"BOM");allStudents.push({n:n,p:"BOM",done:d.c>0,c:d.c,sc:d.s})});
+    EN.forEach(function(n){var d=aGet(n,"EN");allStudents.push({n:n,p:"EN",done:d.c>0,c:d.c,sc:d.s})});
+    
+    var doneCount=allStudents.filter(function(s){return s.done}).length;
+    var pendCount=allStudents.length-doneCount;
+    
+    contentHTML='<h3 style="font-size:16px;margin-bottom:12px;color:#1e1b4b">🔄 إعادة تعيين المحاولات / Reset Attempts</h3>'+msgHTML+'<div style="display:flex;gap:10px;margin-bottom:16px"><div style="flex:1;background:#f0fdf4;border-radius:10px;padding:12px;text-align:center"><div style="font-size:24px;font-weight:800;color:#22c55e">'+doneCount+'</div><div style="font-size:11px;color:#166534">Submitted</div></div><div style="flex:1;background:#fef3c7;border-radius:10px;padding:12px;text-align:center"><div style="font-size:24px;font-weight:800;color:#f59e0b">'+pendCount+'</div><div style="font-size:11px;color:#92400e">Pending</div></div><div style="flex:1;background:#eff6ff;border-radius:10px;padding:12px;text-align:center"><div style="font-size:24px;font-weight:800;color:var(--blue)">'+allStudents.length+'</div><div style="font-size:11px;color:var(--blue)">Total</div></div></div>';
+    
+    contentHTML+='<div style="display:flex;gap:8px;margin-bottom:16px"><button class="adbtn dn" onclick="admResetAll(\'BOM\')" style="flex:1;font-size:11px">🔄 Reset All BOM</button><button class="adbtn dn" onclick="admResetAll(\'EN\')" style="flex:1;font-size:11px">🔄 Reset All EN</button></div>';
+    
+    contentHTML+='<div style="margin-bottom:10px;font-size:12px;color:var(--gray)">اضغط على 🔄 بجانب اسم الطالب للسماح بإعادة التقديم</div>';
+    
+    // BOM section
+    contentHTML+='<div style="font-size:14px;font-weight:700;color:var(--blue);margin:12px 0 8px;padding:6px 10px;background:#eff6ff;border-radius:8px">BOM — '+BOM.length+' students</div>';
+    BOM.forEach(function(n){
+      var d=aGet(n,"BOM");
+      var done=d.c>0;
+      contentHTML+='<div class="adst"><div><span style="font-weight:'+(done?'700':'400')+'">'+(done?'✅':'⬜')+' '+n+'</span>'+(done?' <span style="font-size:11px;color:#6b7280">(Score: '+d.s.join(", ")+')</span>':'')+'</div>'+(done?'<button class="adbtn dn" onclick="admResetStudent(\''+n.replace(/'/g,"\\'")+'\',\'BOM\')" style="padding:4px 10px;font-size:11px">🔄 Reset</button>':'<span class="pend">pending</span>')+'</div>';
+    });
+    
+    // EN section
+    contentHTML+='<div style="font-size:14px;font-weight:700;color:var(--green);margin:12px 0 8px;padding:6px 10px;background:#f0fdf4;border-radius:8px">EN — '+EN.length+' students</div>';
+    EN.forEach(function(n){
+      var d=aGet(n,"EN");
+      var done=d.c>0;
+      contentHTML+='<div class="adst"><div><span style="font-weight:'+(done?'700':'400')+'">'+(done?'✅':'⬜')+' '+n+'</span>'+(done?' <span style="font-size:11px;color:#6b7280">(Score: '+d.s.join(", ")+')</span>':'')+'</div>'+(done?'<button class="adbtn dn" onclick="admResetStudent(\''+n.replace(/'/g,"\\'")+'\',\'EN\')" style="padding:4px 10px;font-size:11px">🔄 Reset</button>':'<span class="pend">pending</span>')+'</div>';
+    });
+  }
+  
+  app.innerHTML='<div class="adm"><div class="adc"><div class="adh"><div><div style="font-size:18px;font-weight:700">🛡️ Admin Panel</div><div style="font-size:12px;opacity:.8">لوحة تحكم المدرّس</div></div><button onclick="closeAdmin()" style="padding:8px 16px;border:2px solid rgba(255,255,255,.3);border-radius:8px;background:transparent;color:#fff;cursor:pointer;font-size:13px">✕ Close</button></div><div class="adb"><div class="adtab"><button class="adtb'+(ADM.tab==="reset"?" a":"")+'" onclick="admTab(\'reset\')">🔄 إدارة المحاولات</button><button class="adtb'+(ADM.tab==="add"?" a":"")+'" onclick="admTab(\'add\')">➕ إضافة طالب</button></div>'+contentHTML+'</div></div></div>';
 }
+
+var S={pg:"start",sec:0,ans:{},nm:"",pr:"",sr:"",ld:false,sc:null,scs:null,st:null,el:"00:00:00",tid:null,ag:false,att:0};
+
+// ★★★ BEHAVIOR TRACKING SYSTEM ★★★
+var BHV={
+  sectionVisits:[],        // [{section, enterTime, leaveTime}]
+  sectionEnterTime:null,   // current section enter timestamp
+  answerChanges:{},        // {"0-3": 2} = question 0-3 changed 2 times
+  answerTimestamps:{},     // {"0-3": "2026-01-15T10:05:32"} first answer time
+  navigationLog:[],        // [{from, to, time}]
+  tabSwitches:0,           // how many times student left the tab
+  focusLost:0,             // focus lost events
+  totalClicks:0,           // total interaction clicks
+  questionsSkipped:[],     // questions left blank at submit
+  lastActivity:null,       // last interaction timestamp
+  idlePeriods:[],          // [{start, end, duration}] idle > 30s
+  idleStart:null,
+  examStartTime:null,
+  examEndTime:null,
+  deviceInfo:"",
+  screenSize:""
+};
+
+// Track tab visibility changes (potential cheating indicator)
+document.addEventListener("visibilitychange",function(){
+  if(S.pg==="exam"){
+    if(document.hidden){BHV.tabSwitches++;BHV.navigationLog.push({event:"tab_hidden",time:new Date().toISOString()})}
+    else{BHV.navigationLog.push({event:"tab_visible",time:new Date().toISOString()})}
+  }
+});
+// Track focus loss
+window.addEventListener("blur",function(){if(S.pg==="exam"){BHV.focusLost++;BHV.navigationLog.push({event:"focus_lost",time:new Date().toISOString()})}});
+window.addEventListener("focus",function(){if(S.pg==="exam"){BHV.navigationLog.push({event:"focus_gained",time:new Date().toISOString()})}});
+// Track idle periods
+document.addEventListener("mousemove",function(){trackActivity()});
+document.addEventListener("keydown",function(){trackActivity()});
+document.addEventListener("click",function(){if(S.pg==="exam")BHV.totalClicks++; trackActivity()});
+
+function trackActivity(){
+  var now=Date.now();
+  if(S.pg==="exam"){
+    if(BHV.idleStart && (now-BHV.idleStart)>30000){
+      BHV.idlePeriods.push({start:new Date(BHV.idleStart).toISOString(),end:new Date(now).toISOString(),durationSec:Math.round((now-BHV.idleStart)/1000)});
+    }
+    BHV.idleStart=now;
+    BHV.lastActivity=new Date(now).toISOString();
+  }
+}
+
+function trackSectionEnter(secIdx){
+  BHV.sectionEnterTime=Date.now();
+  BHV.navigationLog.push({event:"section_enter",section:secIdx+1,time:new Date().toISOString()});
+}
+function trackSectionLeave(secIdx){
+  if(BHV.sectionEnterTime){
+    var dur=Math.round((Date.now()-BHV.sectionEnterTime)/1000);
+    BHV.sectionVisits.push({section:secIdx+1,durationSec:dur,time:new Date().toISOString()});
+  }
+}
+
+// ★★★ BUILD COMPREHENSIVE JSON for AI Evaluation ★★★
+function buildStudentJSON(){
+  var sc=S.scs;
+  var json={
+    // ===== METADATA =====
+    metadata:{
+      examId:CFG.examId,
+      examTitle:CFG.title,
+      unit:CFG.unit,
+      course:CFG.code,
+      instructor:CFG.instructor,
+      college:CFG.college,
+      generatedAt:new Date().toISOString(),
+      version:"1.0"
+    },
+    // ===== STUDENT INFO =====
+    student:{
+      name:S.nm,
+      program:S.pr,
+      programFull:S.pr==="BOM"?"Business Office Management":"Emergency Nursing",
+      attemptNumber:S.att,
+      penaltyApplied:S.att>1
+    },
+    // ===== TIMING =====
+    timing:{
+      startTime:BHV.examStartTime,
+      endTime:new Date().toISOString(),
+      totalDuration:S.el,
+      totalDurationSec:S.st?Math.round((Date.now()-S.st)/1000):0,
+      timeLimitMin:CFG.timeLimit,
+      exceededTimeLimit:S.st?((Date.now()-S.st)/60000)>CFG.timeLimit:false
+    },
+    // ===== SCORES =====
+    scores:{
+      section1_MCQ:{earned:sc.s1,total:20,percentage:Math.round((sc.s1/20)*100)},
+      section2_TrueFalse:{earned:sc.s2,total:15,percentage:Math.round((sc.s2/15)*100)},
+      section3_FillBlanks:{earned:sc.s3,total:15,percentage:Math.round((sc.s3/15)*100)},
+      section4_Matching:{earned:sc.s4,total:15,percentage:Math.round((sc.s4/15)*100)},
+      autoGradedTotal:{earned:sc.tot,total:65,percentage:Math.round((sc.tot/65)*100)},
+      manualGraded:{total:35,sections:"5 & 6"},
+      examTotal:100
+    },
+    // ===== ANSWERS — Section by Section =====
+    answers:{
+      section1_MCQ:{},
+      section2_TrueFalse:{},
+      section3_FillBlanks:{},
+      section4_Matching:{},
+      section5_ShortAnswer:{},
+      section6_Scenarios:{}
+    },
+    // ===== BEHAVIOR ANALYTICS =====
+    behavior:{
+      engagement:{
+        totalClicks:BHV.totalClicks,
+        tabSwitches:BHV.tabSwitches,
+        focusLostEvents:BHV.focusLost,
+        suspiciousActivity:BHV.tabSwitches>3?"HIGH":BHV.tabSwitches>1?"MEDIUM":"LOW",
+        idlePeriods:BHV.idlePeriods,
+        totalIdleTimeSec:BHV.idlePeriods.reduce(function(a,p){return a+p.durationSec},0)
+      },
+      sectionTimeSpent:{},
+      answerChangeCount:{},
+      navigationLog:BHV.navigationLog,
+      questionsUnanswered:[],
+      completionRate:0,
+      deviceInfo:navigator.userAgent,
+      screenSize:window.innerWidth+"x"+window.innerHeight
+    }
+  };
+
+  // ===== Populate Section 1: MCQ answers =====
+  SEC[0].qs.forEach(function(q,i){
+    var ans=gA(0,i);
+    var correct=q.c;
+    json.answers.section1_MCQ["Q"+(i+1)]={
+      question:q.q,
+      studentAnswer:ans!==null?q.o[ans]:"(unanswered)",
+      studentAnswerIndex:ans,
+      correctAnswer:q.o[correct],
+      correctAnswerIndex:correct,
+      isCorrect:ans===correct,
+      marksEarned:ans===correct?2:0,
+      marksTotal:2
+    };
+  });
+
+  // ===== Populate Section 2: T/F =====
+  SEC[1].qs.forEach(function(q,i){
+    var ans=gA(1,i);
+    var isCorrect=ans!==null&&(ans==="true")===q.c;
+    json.answers.section2_TrueFalse["Q"+(i+1)]={
+      question:q.q,
+      studentAnswer:ans===null?"(unanswered)":ans==="true"?"True":"False",
+      correctAnswer:q.c?"True":"False",
+      isCorrect:isCorrect,
+      marksEarned:isCorrect?1.5:0,
+      marksTotal:1.5
+    };
+  });
+
+  // ===== Populate Section 3: Fill blanks =====
+  SEC[2].qs.forEach(function(q,i){
+    var ans=gA(2,i);
+    json.answers.section3_FillBlanks["Q"+(i+1)]={
+      question:q.q,
+      studentAnswer:ans||"(unanswered)",
+      correctAnswer:q.c,
+      isCorrect:ans===q.c,
+      marksEarned:ans===q.c?1.5:0,
+      marksTotal:1.5
+    };
+  });
+
+  // ===== Populate Section 4: Matching =====
+  SEC[3].tr.forEach(function(term,i){
+    var ans=gA(3,i);
+    var correct=SEC[3].mp[i];
+    var correctDesc=SEC[3].ds.find(function(d){return d.l===correct});
+    var studentDesc=ans?SEC[3].ds.find(function(d){return d.l===ans}):null;
+    json.answers.section4_Matching["Q"+(i+1)]={
+      term:term,
+      studentAnswer:ans||"(unanswered)",
+      studentDescription:studentDesc?studentDesc.d:"(unanswered)",
+      correctAnswer:correct,
+      correctDescription:correctDesc?correctDesc.d:"",
+      isCorrect:ans===correct,
+      marksEarned:ans===correct?1.5:0,
+      marksTotal:1.5
+    };
+  });
+
+  // ===== Populate Section 5: Short Answer — question text as key, answer as value =====
+  SEC[4].qs.forEach(function(q,i){
+    var ans=gA(4,i)||"";
+    json.answers.section5_ShortAnswer[q.q]=ans||"(unanswered)";
+  });
+
+  // ===== Populate Section 6: Scenarios — question text as key, answer as value =====
+  SEC[5].scs.forEach(function(sc,si){
+    json.answers.section6_Scenarios["Scenario"+(si+1)+"_"+sc.t]={};
+    sc.qs.forEach(function(q,qi){
+      var ans=gA(5,si+"-"+qi)||"";
+      json.answers.section6_Scenarios["Scenario"+(si+1)+"_"+sc.t][q.q]=ans||"(unanswered)";
+    });
+  });
+
+  // ===== Behavior: Section time spent =====
+  var secTimes={};
+  BHV.sectionVisits.forEach(function(v){
+    if(!secTimes["Section"+v.section])secTimes["Section"+v.section]=0;
+    secTimes["Section"+v.section]+=v.durationSec;
+  });
+  json.behavior.sectionTimeSpent=secTimes;
+
+  // ===== Behavior: Answer changes =====
+  json.behavior.answerChangeCount=BHV.answerChanges;
+
+  // ===== Behavior: Unanswered questions =====
+  var answered=0,total=0;
+  SEC.forEach(function(s,si){
+    if(s.tp==="mcq"||s.tp==="tf"||s.tp==="dd"){s.qs.forEach(function(_,qi){total++;var a=gA(si,qi);if(a===null)json.behavior.questionsUnanswered.push("S"+(si+1)+"_Q"+(qi+1));else answered++})}
+    else if(s.tp==="mt"){s.tr.forEach(function(_,qi){total++;var a=gA(si,qi);if(a===null)json.behavior.questionsUnanswered.push("S"+(si+1)+"_Q"+(qi+1));else answered++})}
+    else if(s.tp==="es"){s.qs.forEach(function(_,qi){total++;var a=gA(si,qi);if(!a||!a.trim())json.behavior.questionsUnanswered.push("S"+(si+1)+"_Q"+(qi+1));else answered++})}
+    else if(s.tp==="sc"){s.scs.forEach(function(sc,sci){sc.qs.forEach(function(_,qi){total++;var a=gA(si,sci+"-"+qi);if(!a||!a.trim())json.behavior.questionsUnanswered.push("S"+(si+1)+"_Sc"+(sci+1)+"_Q"+(qi+1));else answered++})})}
+  });
+  json.behavior.completionRate=Math.round((answered/total)*100);
+
+  return json;
+}
+
+function gA(i,q){return S.ans[i+"-"+q]??null}
+function sA(i,q,v,sk){
+  var key=i+"-"+q;
+  // Track answer changes
+  if(S.ans[key]!==undefined && S.ans[key]!==v){
+    if(!BHV.answerChanges[key])BHV.answerChanges[key]=0;
+    BHV.answerChanges[key]++;
+  }
+  // Track first answer time
+  if(!BHV.answerTimestamps[key])BHV.answerTimestamps[key]=new Date().toISOString();
+  S.ans[key]=v;if(!sk)R()
+}
+function gU(i){var u={},s=SEC[i],n=s.tp==="mt"?s.tr.length:s.tp==="dd"?s.qs.length:0;for(var j=0;j<n;j++){var v=gA(i,j);if(v)u[v]=true}return u}
+function cS(){var a=0,b=0,c=0,d=0;SEC[0].qs.forEach(function(q,i){if(gA(0,i)===q.c)a+=2});SEC[1].qs.forEach(function(q,i){var v=gA(1,i);if(v!==null&&(v==="true")===q.c)b+=1.5});SEC[2].qs.forEach(function(q,i){if(gA(2,i)===q.c)c+=1.5});SEC[3].tr.forEach(function(_,i){if(gA(3,i)===SEC[3].mp[i])d+=1.5});return{s1:a,s2:b,s3:c,s4:d,tot:a+b+c+d}}
+function cA(){var c=0,t=0;SEC.forEach(function(s,i){if(s.tp==="mcq"||s.tp==="tf"||s.tp==="dd")s.qs.forEach(function(_,q){t++;if(gA(i,q)!==null)c++});else if(s.tp==="mt")s.tr.forEach(function(_,q){t++;if(gA(i,q)!==null)c++});else if(s.tp==="es")s.qs.forEach(function(_,q){t++;if(gA(i,q)&&gA(i,q).trim())c++});else if(s.tp==="sc")s.scs.forEach(function(sc,si){sc.qs.forEach(function(_,q){t++;if(gA(i,si+"-"+q)&&gA(i,si+"-"+q).trim())c++})})});return{c:c,t:t}}
+function stT(){S.st=Date.now();S.tid=setInterval(function(){var d=Date.now()-S.st,h=Math.floor(d/36e5),m=Math.floor((d%36e5)/6e4),s=Math.floor((d%6e4)/1e3);S.el=(h<10?"0"+h:h)+":"+(m<10?"0"+m:m)+":"+(s<10?"0"+s:s);var e=document.getElementById("tt");if(e)e.textContent=S.el;var td=document.getElementById("td");if(td){var mn=d/6e4;td.className="tmd"+(mn>=CFG.timeLimit?" tmx":mn>=CFG.timeLimit-10?" tmw":"")}},1e3)}
+function spT(){if(S.tid){clearInterval(S.tid);S.tid=null}}
+
+function submit(){
+  spT();trackSectionLeave(S.sec);BHV.examEndTime=new Date().toISOString();
+  var sc=cS();S.scs=sc;S.sc=sc.tot;
+  var prev=aGet(S.nm,S.pr);S.att=prev.c+1;
+  aSave(S.nm,S.pr,sc.tot);
+  var pen=S.att>1;
+  // Build comprehensive JSON
+  var studentJSON=buildStudentJSON();
+  // Store JSON for download
+  S.jsonData=studentJSON;
+  var ea=SEC[4].qs.map(function(_,i){return gA(4,i)||""});
+  var sa=[];SEC[5].scs.forEach(function(c,ci){c.qs.forEach(function(_,qi){sa.push(gA(5,ci+"-"+qi)||"")})});
+  if(CFG.url){
+    S.ld=true;R();
+    var ifr=document.createElement("iframe");ifr.name="sf";ifr.style.display="none";document.body.appendChild(ifr);
+    var fm=document.createElement("form");fm.method="POST";fm.action=CFG.url;fm.target="sf";
+    var flds={studentName:S.nm,program:S.pr,examId:CFG.examId,s1:sc.s1,s2:sc.s2,s3:sc.s3,s4:sc.s4,duration:S.el,attemptNumber:S.att,penaltyApplied:pen?"true":"false",essayAnswers:ea.join("|||"),scenarioAnswers:sa.join("|||"),studentJSON:JSON.stringify(studentJSON)};
+    for(var k in flds){var inp=document.createElement("input");inp.type="hidden";inp.name=k;inp.value=flds[k];fm.appendChild(inp)}
+    document.body.appendChild(fm);fm.submit();
+    setTimeout(function(){try{document.body.removeChild(fm);document.body.removeChild(ifr)}catch(e){}S.ld=false;S.pg="result";R();window.scrollTo(0,0)},3500)
+  }else{S.pg="result";R();window.scrollTo(0,0)}
+}
+function downloadJSON(){
+  if(!S.jsonData)return;
+  var str=JSON.stringify(S.jsonData,null,2);
+  var blob=new Blob([str],{type:"application/json"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url;a.download=S.nm.replace(/\s/g,"_")+"_"+CFG.examId+".json";
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+function hT(el){var si=+el.dataset.si,qi=el.dataset.qi;var qp=isNaN(+qi)?qi:(qi.includes("-")?qi:+qi);sA(si,qp,el.value,true);var c=el.closest('.qc');if(c){if(el.value.trim())c.classList.add('aw');else c.classList.remove('aw')}}
+function pN(i){var sts=S.pr==="BOM"?BOM:EN;var f=sts.filter(function(s){return s.includes(S.sr)});S.nm=f[i];S.ag=false;R()}
+function gS(i){if(i>=0&&i<SEC.length){trackSectionLeave(S.sec);S.sec=i;trackSectionEnter(i);R();window.scrollTo(0,0)}}
+function tA(){S.ag=!S.ag;R()}
+function go(){if(!S.ag)return alert("يجب الموافقة على الشروط أولاً");if(aBlocked(S.nm,S.pr)){S.pg="blocked";R();return}S.pg="exam";BHV.examStartTime=new Date().toISOString();BHV.idleStart=Date.now();trackSectionEnter(0);stT();R();window.scrollTo(0,0)}
+
+function R(){
+var app=document.getElementById("app"),ll=document.getElementById("ll");
+if(S.ld){if(ll)ll.classList.remove("hid");return}else{if(ll)ll.classList.add("hid")}
+if(S.pg==="admin")return rAdmin(app);
+if(S.pg==="blocked")return rB(app);
+if(S.pg==="start")return rS(app);
+if(S.pg==="result")return rR(app);
+rE(app)
+}
+
+function rB(app){
+var p=aGet(S.nm,S.pr);
+app.innerHTML='<div class="bp"><div class="bc"><div class="bh"><div style="font-size:60px;margin-bottom:10px">⛔</div><h2 style="font-size:22px">Access Denied</h2></div><div class="bb"><h3 style="font-size:18px;color:#991b1b;margin-bottom:12px">لقد قمت بتقديم هذا الامتحان مسبقاً</h3><p style="font-size:14px;color:#6b7280;margin-bottom:16px;line-height:1.8">You have already submitted this exam.<br>Only ONE attempt is allowed.</p><div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:14px;margin:16px 0;text-align:right;font-size:13px;color:#7f1d1d"><strong>بيانات المحاولة:</strong><br>'+S.nm+'<br>'+S.pr+' | محاولات: '+p.c+'</div><button onclick="S.pg=\'start\';S.nm=\'\';S.pr=\'\';S.ag=false;R()" style="margin-top:16px;padding:10px 30px;border:2px solid #d1d5db;border-radius:10px;background:#fff;cursor:pointer;font-size:13px">← رجوع</button></div></div></div>'}
+
+function rS(app){
+if(S.nm&&S.pr&&aBlocked(S.nm,S.pr)){S.pg="blocked";return rB(app)}
+var sts=S.pr==="BOM"?BOM:S.pr==="EN"?EN:[];var f=sts.filter(function(s){return s.includes(S.sr)});
+var nl="";
+if(S.pr){var its=f.length===0?'<div style="padding:20px;text-align:center;color:#9ca3af;direction:rtl">لا توجد نتائج</div>':f.map(function(n,i){var sl=S.nm===n;var idx=sts.indexOf(n)+1;var bk=aBlocked(n,S.pr);return'<div class="ni'+(sl?' sel':'')+'" onclick="pN('+i+')" style="'+(bk&&!sl?'opacity:.5':'')+'"><div class="nn">'+(sl?"✓":bk?"🔒":idx)+'</div><span>'+n+(bk?' <span class="atb">submitted</span>':'')+'</span></div>'}).join("");
+nl='<div style="margin-bottom:20px"><div class="lbl">Step 2: Select your name / اختر اسمك</div><div class="sbx"><input value="'+S.sr+'" oninput="S.sr=this.value;S.nm=\'\';S.ag=false;R()" placeholder="ابحث عن اسمك..."><span class="si">🔍</span></div><div class="nl">'+its+'</div><div style="font-size:11px;color:#9ca3af;margin-top:6px;text-align:right;direction:rtl">'+sts.length+' طالب | '+f.length+' نتيجة</div></div>'}
+var cf=S.nm?'<div class="cf"><div class="ck">✓</div><div><div style="font-size:15px;font-weight:700;color:#166534">'+S.nm+'</div><div style="font-size:12px;color:#4ade80">'+(S.pr==="BOM"?"Business Office Management":"Emergency Nursing")+'</div></div></div>':"";
+var w="";
+if(S.nm&&!aBlocked(S.nm,S.pr)){w='<div class="wb"><div class="wt">⚠️ تحذير هام — Important Warning</div><ul><li><strong>محاولة واحدة فقط</strong> — Only ONE attempt allowed</li><li>لا يمكن إعادة التقديم بعد التسليم</li><li><strong>في حال التحايل: يُعتمد العلامة الأقل تلقائياً</strong></li><li>All attempts are logged and monitored</li></ul><div class="wf">🔒 النظام يسجّل جميع الأنشطة</div></div><div class="ab" onclick="tA()"><input type="checkbox" '+(S.ag?"checked":"")+'><label>أوافق على الشروط وأتحمل المسؤولية / I agree to all terms</label></div>'}
+var ok=S.nm&&S.pr&&S.ag&&!aBlocked(S.nm,S.pr);
+app.innerHTML='<div class="sp"><div class="sc"><div class="sh"><div class="c">'+CFG.college+'</div><h1>'+CFG.title+'</h1><div class="s1">'+CFG.code+' — Comprehensive Exam</div><div class="s2">'+CFG.unit+'</div><div class="s2">Instructor: '+CFG.instructor+'</div></div><div class="sb"><div class="ins"><strong>تعليمات / Instructions:</strong><br>• 100 marks — 6 sections — '+CFG.timeLimit+' min<br>• Auto-graded: Sections 1–4<br>• Manual: Sections 5–6<br>• ⚠️ <strong style="color:#dc2626">محاولة واحدة فقط / ONE attempt only</strong></div><div class="lbl">Step 1: Program / التخصص</div><div class="pbs"><div class="pb'+(S.pr==="BOM"?" a":"")+'" onclick="S.pr=\'BOM\';S.nm=\'\';S.sr=\'\';S.ag=false;R()"><div class="pn">BOM</div><div class="pd">Business Office</div><div style="font-size:10px;color:#aaa;margin-top:2px">'+BOM.length+'</div></div><div class="pb'+(S.pr==="EN"?" a":"")+'" onclick="S.pr=\'EN\';S.nm=\'\';S.sr=\'\';S.ag=false;R()"><div class="pn">EN</div><div class="pd">Emergency Nursing</div><div style="font-size:10px;color:#aaa;margin-top:2px">'+EN.length+'</div></div></div>'+nl+cf+w+'<button class="stb" '+(ok?'onclick="go()"':'disabled')+'>Start Exam — ابدأ الامتحان →</button><div style="text-align:center;margin-top:20px"><span onclick="openAdmin()" style="cursor:pointer;font-size:11px;color:#d1d5db;user-select:none" title="Admin Panel">🛡️</span></div></div></div></div>'}
+
+function rE(app){
+var s=SEC[S.sec],r=cA(),pc=Math.round((r.c/r.t)*100);
+var lc={Basic:"#22c55e",Intermediate:"#f59e0b",Advanced:"#ef4444"}[s.lv];
+var sn=SEC.map(function(x,i){return'<button class="snb'+(S.sec===i?' a':'')+'" onclick="gS('+i+')">'+(i+1)+'</button>'}).join("");
+var ct="";
+if(s.tp==="mcq"){ct=s.qs.map(function(q,qi){var a=gA(S.sec,qi);return'<div class="qc'+(a!==null?' aw':'')+'"><div class="qt"><span class="nm">Q'+(qi+1)+'.</span>'+q.q+'</div>'+q.o.map(function(o,oi){return'<div class="op'+(a===oi?' sl':'')+'" onclick="sA('+S.sec+','+qi+','+oi+')"><div class="rd"></div><span>'+String.fromCharCode(97+oi)+') '+o+'</span></div>'}).join("")+'</div>'}).join("")}
+else if(s.tp==="tf"){ct=s.qs.map(function(q,qi){var a=gA(S.sec,qi);return'<div class="qc'+(a!==null?' aw':'')+'"><div class="qt"><span class="nm">Q'+(qi+1)+'.</span>'+q.q+'</div><div class="tfb"><button class="tf'+(a==="true"?' sl':'')+'" onclick="sA('+S.sec+','+qi+',\'true\')">✓ True</button><button class="tf'+(a==="false"?' sl':'')+'" onclick="sA('+S.sec+','+qi+',\'false\')">✗ False</button></div></div>'}).join("")}
+else if(s.tp==="dd"){var u=gU(S.sec);ct='<div class="wbk"><strong>Word Bank:</strong> '+s.bk.map(function(w){return'<span style="'+(u[w]?'text-decoration:line-through;color:#9ca3af':'')+'">'+w+'</span>'}).join(" • ")+'</div>';ct+=s.qs.map(function(q,qi){var a=gA(S.sec,qi)||"";var os=s.bk.map(function(w){var uo=false;for(var j=0;j<s.qs.length;j++){if(j!==qi&&gA(S.sec,j)===w){uo=true;break}}return'<option value="'+w+'"'+(a===w?' selected':'')+(uo?' style="color:#9ca3af"':'')+'>'+w+(uo?' ✗':'')+'</option>'}).join("");return'<div class="qc'+(a?' aw':'')+'"><div class="qt"><span class="nm">Q'+(qi+1)+'.</span>'+q.q+'</div><select onchange="sA('+S.sec+','+qi+',this.value||null)"><option value="">-- Select --</option>'+os+'</select></div>'}).join("")}
+else if(s.tp==="mt"){var u=gU(S.sec);ct='<div class="dbk"><strong>Descriptions:</strong>'+s.ds.map(function(d){return'<div style="'+(u[d.l]?'text-decoration:line-through;color:#9ca3af':'')+'"><strong>'+d.l+'.</strong> '+d.d+(u[d.l]?' <span class="ut">USED</span>':'')+'</div>'}).join("")+'</div>';ct+=s.tr.map(function(t,qi){var a=gA(S.sec,qi)||"";var os=s.ds.map(function(d){var uo=false;for(var j=0;j<s.tr.length;j++){if(j!==qi&&gA(S.sec,j)===d.l){uo=true;break}}return'<option value="'+d.l+'"'+(a===d.l?' selected':'')+(uo?' style="color:#9ca3af"':'')+'>'+d.l+(uo?' ✗':'')+'</option>'}).join("");return'<div class="mr'+(a?' aw':'')+'"><span style="font-size:13px;font-weight:600">'+(qi+1)+'. '+t+'</span><select onchange="sA('+S.sec+','+qi+',this.value||null)"><option value="">--</option>'+os+'</select></div>'}).join("")}
+else if(s.tp==="es"){ct=s.qs.map(function(q,qi){var a=gA(S.sec,qi)||"";return'<div class="qc'+(a.trim()?' aw':'')+'"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px"><div class="qt" style="margin:0;flex:1"><span class="nm">Q'+(qi+1)+'.</span>'+q.q+'</div><span style="font-size:11px;color:#9ca3af">'+q.m+' marks</span></div><textarea rows="4" placeholder="Type your answer..." data-si="'+S.sec+'" data-qi="'+qi+'" oninput="hT(this)">'+a+'</textarea></div>'}).join("")}
+else if(s.tp==="sc"){ct=s.scs.map(function(sc,si){var qs=sc.qs.map(function(q,qi){var a=gA(S.sec,si+"-"+qi)||"";return'<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><p style="font-size:13px;font-weight:600">'+String.fromCharCode(97+qi)+') '+q.q+'</p><span style="font-size:11px;color:#9ca3af">'+q.m+'m</span></div><textarea rows="3" placeholder="Answer..." data-si="'+S.sec+'" data-qi="'+si+'-'+qi+'" oninput="hT(this)">'+a+'</textarea></div>'}).join("");return'<div class="scb"><h3>Scenario '+(si+1)+': '+sc.t+'</h3><div class="sct">'+sc.tx+'</div>'+qs+'</div>'}).join("")}
+var nv='<div class="nvb"><button class="nv pvb" '+(S.sec===0?'disabled':'')+' onclick="gS('+(S.sec-1)+')">← Previous</button>'+(S.sec<SEC.length-1?'<button class="nv nxb" onclick="gS('+(S.sec+1)+')">Next →</button>':'<button class="nv sub" onclick="if(confirm(\'⚠️ محاولة واحدة فقط!\\nONE attempt only!\\n\\nSubmit?\'))submit()">✓ Submit</button>')+'</div>';
+app.innerHTML='<div class="tb"><div class="tbi"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;font-weight:700;color:var(--blue)">'+CFG.code+'</span><span class="bdg '+S.pr.toLowerCase()+'">'+S.pr+'</span><span style="font-size:12px;color:var(--gray);direction:rtl">'+S.nm+'</span></div><div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--gray)"><span>'+r.c+'/'+r.t+'</span><div class="pb2"><div class="pf" style="width:'+pc+'%"></div></div></div></div></div><div class="tmb"><div class="tmd" id="td"><span style="font-size:16px">⏱</span><span class="tmt" id="tt">'+S.el+'</span><span style="font-size:10px;color:var(--gray)">Elapsed</span></div></div><div class="sn"><div class="sni">'+sn+'</div></div><div class="ctr"><div class="shd" style="border-top:4px solid '+lc+'"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px"><div><h2 style="font-size:18px">'+s.t+'</h2><p style="font-size:13px;color:var(--gray);margin-top:5px">'+s.st+'</p></div><div style="display:flex;gap:6px"><span class="tg" style="background:'+lc+'20;color:'+lc+'">'+s.lv+'</span><span class="tg" style="background:#f0f0f0;color:#555">'+s.mk+'m</span></div></div></div>'+ct+nv+'</div>'}
+
+function rR(app){
+var s=S.scs,am=65,pc=Math.round((S.sc/am)*100);
+var g=pc>=80?"Excellent":pc>=60?"Good":pc>=40?"Needs Improvement":"Below Expectations";
+var gb=pc>=80?"#dcfce7":pc>=60?"#fef9c3":"#fee2e2";
+var gc=pc>=80?"#166534":pc>=60?"#854d0e":"#991b1b";
+var pen=S.att>1?'<div style="background:#fef2f2;border:2px solid #dc2626;border-radius:12px;padding:14px;margin:12px 0;text-align:center;direction:rtl"><div style="font-size:16px;font-weight:800;color:#991b1b">⚠️ محاولة #'+S.att+' — Penalty Applied</div><div style="font-size:13px;color:#7f1d1d;margin-top:6px">سيُعتمد العلامة الأقل تلقائياً</div></div>':"";
+var cr=S.jsonData?S.jsonData.behavior.completionRate:0;
+var bhv='<div style="background:#f5f3ff;border:1px solid #c4b5fd;border-radius:12px;padding:14px;margin:12px 0"><div style="font-size:13px;font-weight:700;color:#5b21b6;margin-bottom:8px">📊 Exam Analytics / تحليلات الامتحان</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;color:#6d28d9"><div>⏱ Duration: <b>'+S.el+'</b></div><div>📋 Completion: <b>'+cr+'%</b></div><div>🔄 Tab switches: <b>'+BHV.tabSwitches+'</b></div><div>🖱️ Clicks: <b>'+BHV.totalClicks+'</b></div><div>⏸️ Idle periods: <b>'+BHV.idlePeriods.length+'</b></div><div>📝 Answer edits: <b>'+Object.keys(BHV.answerChanges).length+'</b></div></div></div>';
+app.innerHTML='<div class="rp"><div class="rc"><div class="rh"><div style="font-size:48px;margin-bottom:8px">✓</div><h2 style="font-size:22px">Exam Submitted!</h2><h3 style="margin:8px 0 0;font-size:17px;direction:rtl">'+S.nm+'</h3><p style="opacity:.7;font-size:13px">'+(S.pr==="BOM"?"Business Office Management":"Emergency Nursing")+'</p></div><div class="rby"><div class="tr"><div style="font-size:12px;color:var(--gray);margin-bottom:4px">⏱ الوقت المستغرق</div><div class="tv">'+S.el+'</div></div>'+pen+'<div style="text-align:center;margin-bottom:24px"><div class="bs">'+S.sc+'<span>/'+am+'</span></div><div style="font-size:14px;color:#6b7280">Auto-Graded (1–4)</div><div style="margin-top:12px"><span class="gb" style="background:'+gb+';color:'+gc+'">'+g+' — '+pc+'%</span></div></div><div class="bkd"><div style="font-size:13px;font-weight:600;margin-bottom:10px">Breakdown:</div><div class="bkr"><span>MCQ</span><span style="font-weight:700;color:var(--blue)">'+s.s1+'/20</span></div><div class="bkr"><span>T/F</span><span style="font-weight:700;color:var(--blue)">'+s.s2+'/15</span></div><div class="bkr"><span>Fill</span><span style="font-weight:700;color:var(--blue)">'+s.s3+'/15</span></div><div class="bkr" style="border:none"><span>Match</span><span style="font-weight:700;color:var(--blue)">'+s.s4+'/15</span></div></div>'+bhv+'<div class="ntb"><strong>ملاحظة:</strong> القسم 5 و 6 (35 درجة) تحتاج تصحيح يدوي.</div><button onclick="downloadJSON()" style="width:100%;margin-top:16px;padding:12px;border:none;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(124,58,237,.4)">📥 Download Full Report (JSON)</button></div></div></div>'}
 </script>
 <div id="app"></div>
-<div id="ll" class="loading-overlay hidden"><div class="loading-box"><div class="spinner"></div><div style="font-size:15px;font-weight:600">Submitting...</div><div style="font-size:13px;color:#6b7280;direction:rtl">جاري التسليم...</div></div></div>
-<script>render()</script>
+<div id="ll" class="lo hid"><div class="lob"><div class="spn"></div><div style="font-size:15px;font-weight:600">Submitting...</div><div style="font-size:13px;color:#6b7280;direction:rtl">جاري التسليم...</div></div></div>
+<script>R()</script>
 </body>
 </html>
